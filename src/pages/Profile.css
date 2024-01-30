@@ -1,0 +1,436 @@
+.font {
+  color: #000000;
+  font-family: poppins;
+  line-height: normal;
+  font-style: normal;
+  font-weight: 700;
+}
+.fontHeader {
+  margin: auto;
+  margin-left: 13px;
+  margin-top: 13px;
+  font-size: 22px;
+  color: #000000;
+  font-family: poppins;
+  line-height: normal;
+  font-style: normal;
+  font-weight: 700;
+}
+.box {
+  background-color: #f0f0f0;
+  border-radius: 15px;
+}
+.profilePic {
+  margin-top: 10px;
+  margin-left: 10px;
+  width: 105px;
+  height: 105px;
+  background-color: lightgrey;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+.profileFont {
+  color: #fff;
+  font-weight: 500;
+}
+#profileName {
+  font-size: 20px;
+  font-weight: 500;
+  overflow-wrap: break-word;
+  overflow-y: hidden;
+}
+#verified {
+  margin-left: 27px;
+  margin-top: -12px;
+  font-size: 15px;
+}
+
+.myVehicles {
+  margin: auto;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  width: 90%;
+  /* height: 119px; */
+  /* display: flex; */
+  /* height: fit-content; */
+}
+.reviews {
+  margin: auto;
+  margin-top: 16px;
+  background-color: #f0f0f0;
+  border-radius: 15px;
+  width: 90%;
+  padding-bottom: 30px;
+  /* height: 248px; */
+}
+#starVerify {
+  width: 21px;
+  height: 20px;
+  margin-top: 7px;
+}
+#tick {
+  width: 11px;
+  height: 7px;
+  margin-left: 5px;
+  margin-top: -12px;
+}
+
+.blur {
+  background: linear-gradient(180deg, #d9d9d9 0%, rgba(146, 137, 137, 0) 100%);
+}
+.manageButton {
+  border-radius: 15px;
+  background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+}
+.users {
+  margin: auto;
+  margin-top: 35px;
+  width: 90%;
+  border-radius: 21px;
+  background-color: #fff;
+  .font {
+    color: #000000;
+    font-family: poppins;
+    line-height: normal;
+    font-style: normal;
+    font-weight: 700;
+  }
+  .fontHeader {
+    margin: auto;
+    margin-left: 13px;
+    margin-top: 13px;
+    font-size: 22px;
+    color: #000000;
+    font-family: poppins;
+    line-height: normal;
+    font-style: normal;
+    font-weight: 700;
+  }
+  .box {
+    background-color: #f0f0f0;
+    border-radius: 15px;
+  }
+  .background {
+    margin: auto;
+    width: 90%;
+    height: 171px;
+    padding-bottom: 20px;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #32a564 25.12%, #185f37 93.35%);
+  }
+  .ProfileCircle {
+    margin-left: 10px;
+    margin-top: -100px;
+    width: 125px;
+    height: 125px;
+    background-color: rgb(254, 254, 254);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .profilePic {
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 105px;
+    height: 105px;
+    background-color: lightgrey;
+    border-radius: 50%;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+  }
+  .profileFont {
+    color: #fff;
+    font-family: poppins;
+    line-height: normal;
+    font-style: normal;
+    font-weight: 700;
+  }
+  #ProfileName {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  #verified {
+    margin-left: 27px;
+    margin-top: -12px;
+    font-size: 15px;
+  }
+
+  .myVehicles {
+    margin: auto;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    width: 90%;
+    /* height: 119px; */
+    /* display: flex; */
+    /* height: fit-content; */
+  }
+  .reviews {
+    margin: auto;
+    margin-top: 16px;
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    width: 90%;
+    padding-bottom: 30px;
+    /* height: 248px; */
+  }
+  #starVerify {
+    width: 21px;
+    height: 20px;
+    margin-top: 7px;
+  }
+  #tick {
+    width: 11px;
+    height: 7px;
+    margin-left: 5px;
+    margin-top: -12px;
+  }
+
+  .blur {
+    background: linear-gradient(
+      180deg,
+      #d9d9d9 0%,
+      rgba(146, 137, 137, 0) 100%
+    );
+  }
+  .button {
+    border-radius: 15px;
+    background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+  }
+  .users {
+    margin: auto;
+    margin-top: 35px;
+    width: 90%;
+    border-radius: 21px;
+    background-color: #fff;
+    /* display: flex; */
+    padding: 10px;
+  }
+  .userCircle {
+    margin: 10px;
+    width: 90px;
+    height: 90px;
+    padding: 10px;
+    background-color: rgb(254, 254, 254);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .userPic {
+    width: 100%;
+    height: 100%;
+    background-color: lightgrey;
+    border-radius: 50%;
+    object-fit: cover;
+    overflow: hidden;
+    display: flex;
+  }
+
+  /* display: flex; */
+  padding: 10px;
+}
+.userCircle {
+  margin: 10px;
+  width: 90px;
+  height: 90px;
+  padding: 10px;
+  background-color: rgb(254, 254, 254);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.userPic {
+  width: 100%;
+  height: 100%;
+  background-color: lightgrey;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  display: flex;
+}
+
+.card {
+  padding: 19px 22px;
+}
+
+.profileBanner {
+  margin: auto;
+  width: 90%;
+  height: 180px;
+  padding-bottom: 20px;
+  border-radius: 15px;
+  position: relative;
+  background: linear-gradient(180deg, #32a564 25.12%, #185f37 93.35%);
+  margin-bottom: 20px;
+}
+.profileCircle {
+  position: absolute;
+  bottom: -15px;
+  left: -14px;
+  width: 125px;
+  height: 125px;
+  background-color: rgb(254, 254, 254);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profileNameHolder {
+  position: absolute;
+  bottom: 18px;
+  left: 130px;
+  color: white;
+}
+
+.profileName {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.verifiedBadgeHolder {
+  display: flex;
+  align-items: center;
+}
+
+.card {
+  background-color: #f0f0f0;
+  border-radius: 15px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.bioRatingsHolder {
+  padding: 0px 5%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.bioCard {
+  width: 60%;
+}
+
+.ratingsCard {
+  width: 35%;
+}
+
+.ratings {
+  margin-top: 15px;
+}
+
+.ratings span {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.vehiclesCard {
+  width: 90%;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardHeader .manageBtn {
+  --border-radius: 30px;
+  --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+}
+
+.vehicleHolder {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.vehicleHolder div {
+  display: flex;
+  align-items: center;
+}
+
+.vehicleHolder div ion-text {
+  margin-left: 20px;
+}
+.vehicleHolder div ion-badge {
+  margin-left: 10px;
+  --background: gray;
+  padding: 5px 10px;
+}
+
+.seatingCapacityHolder {
+  display: flex;
+  background-color: #d9d9d9;
+  border-radius: 15px;
+  height: 30px;
+  width: 60px;
+  justify-content: center;
+}
+
+.seatingCapacityHolder p {
+  margin-left: 10px;
+}
+
+.reviewsCard {
+  width: 90%;
+  margin: auto;
+}
+
+.reviewsCard .cardHeader {
+  margin-bottom: 10px;
+}
+
+.reviewsCard .cardHeader ion-button {
+  color: #307c51;
+  font-weight: bold;
+  --border-radius: 30px;
+}
+
+.reviewHolder {
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+}
+
+.reviewerIcon ion-img {
+  width: 70px;
+  height: 70px;
+  background-color: lightgrey;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.reviewContentHolder {
+  display: flex;
+  margin-left: 20px;
+  flex-direction: column;
+}
+
+.reviewContentHolder ion-text {
+  line-height: 0.75cm;
+}
+
+.reviewContentHolder ion-text span {
+  font-weight: bold;
+}
+
+.reviewerName {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.profileFooter {
+  padding: 15px 30px;
+  background-color: #d9d9d9;
+}
+
+.editProfileBtn {
+  --border-radius: 30px;
+  height: 45px;
+  --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+}
