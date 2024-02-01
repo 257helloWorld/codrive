@@ -43,9 +43,9 @@ import "./theme/variables.css";
 import { useState } from "react";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
-import History from "./pages/history";
+import History from "./pages/History";
 import RideInfo from "./pages/RideInfo";
-import EditProfile from "./pages/editProfile";
+import EditProfile from "./pages/EditProfile";
 
 setupIonicReact();
 
@@ -58,7 +58,7 @@ const App: React.FC = () => {
           <Route path="/profile" component={Profile} />
           <Route path="/history" component={History} />
           <Route path="/rideinfo" component={RideInfo} />
-          <Route path="/editProfile" component={EditProfile} />
+          <Route path="/editprofile" component={EditProfile} />
 
           <Route exact path="/">
             <Redirect to="/home" />

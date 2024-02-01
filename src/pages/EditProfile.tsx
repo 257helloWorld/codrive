@@ -15,7 +15,7 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import ExploreContainer from "../components/ExploreContainer";
-import "./editProfile.css";
+import "./EditProfile.css";
 import camera from "/assets/images/camera.svg";
 import { navigateOutline } from "ionicons/icons";
 import {
@@ -34,7 +34,7 @@ const Tab: React.FC = () => {
             <IonButtons slot="start">
               <IonBackButton></IonBackButton>
             </IonButtons>
-            <IonTitle style={{ textAlign: "center" }}>Ride History</IonTitle>
+            <IonTitle style={{ textAlign: "center" }}>Edit Profile</IonTitle>
             <IonButtons slot="end">
               <div style={{ marginRight: "50px" }}></div>
             </IonButtons>
@@ -42,7 +42,7 @@ const Tab: React.FC = () => {
         </IonHeader>
         <IonContent>
           <div className="photo">
-            <IonImg src={camera} className="camera"></IonImg>
+            {/* <IonImg src={camera} className="camera"></IonImg> */}
           </div>
         </IonContent>
       </IonPage>

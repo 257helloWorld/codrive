@@ -1,4 +1,3 @@
-
 .profile_font {
   color: #000000;
   font-family: poppins;
@@ -229,210 +228,208 @@
   padding: 10px;
 }
 
-  .profile_userCircle {
-    margin: 10px;
-    width: 90px;
-    height: 90px;
-    padding: 10px;
-    background-color: rgb(254, 254, 254);
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  .profile_userPic {
-    width: 100%;
-    height: 100%;
-    background-color: lightgrey;
-    border-radius: 50%;
-    object-fit: cover;
-    overflow: hidden;
-    display: flex;
-  }
-  
-  .profile_card {
-    padding: 19px 22px;
-  }
-  
-  .profile_profileBanner {
-    margin: auto;
-    width: 90%;
-    height: 180px;
-    padding-bottom: 20px;
-    border-radius: 15px;
-    position: relative;
-    background: linear-gradient(180deg, #32a564 25.12%, #185f37 93.35%);
-    margin-bottom: 20px;
-  }
-  .profile_profileCircle {
-    position: absolute;
-    bottom: -15px;
-    left: -14px;
-    width: 125px;
-    height: 125px;
-    background-color: rgb(254, 254, 254);
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  
-  .profile_profileNameHolder {
-    position: absolute;
-    bottom: 18px;
-    left: 130px;
-    color: white;
-  }
-  
-  .profile_profileName {
-    font-size: 22px;
-    font-weight: 500;
-  }
-  .profile_verifiedBadgeHolder {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile_card {
-    background-color: #f0f0f0;
-    border-radius: 15px;
-  }
-  
-  .profile_cardTitle {
-    font-size: 20px;
-    font-weight: 600;
-  }
-  
-  .profile_bioRatingsHolder {
-    padding: 0px 5%;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .profile_bioCard {
-    width: 60%;
-  }
-  
-  .profile_ratingsCard {
-    width: 35%;
-  }
-  
-  .profile_ratings {
-    margin-top: 15px;
-  }
-  
-  .profile_ratings span {
-    font-size: 22px;
-    font-weight: bold;
-  }
-  
-  .profile_vehiclesCard {
-    width: 90%;
-    margin: auto;
-    margin-bottom: 20px;
-  }
-  
-  .profile_cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .profile_cardHeader .profile_manageBtn {
-    --border-radius: 30px;
-    --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+.profile_userCircle {
+  margin: 10px;
+  width: 90px;
+  height: 90px;
+  padding: 10px;
+  background-color: rgb(254, 254, 254);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.profile_userPic {
+  width: 100%;
+  height: 100%;
+  background-color: lightgrey;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+  display: flex;
+}
 
-  }
-  
-  .profile_vehicleHolder {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-  }
-  
-  .profile_vehicleHolder div {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile_vehicleHolder div ion-text {
-    margin-left: 20px;
-  }
-  .profile_vehicleHolder div ion-badge {
-    margin-left: 10px;
-    --background: gray;
-    padding: 5px 10px;
-  }
-  
-  .profile_seatingCapacityHolder {
-    display: flex;
-    background-color: #d9d9d9;
-    border-radius: 15px;
-    height: 30px;
-    width: 60px;
-    justify-content: center;
-  }
-  
-  .profile_seatingCapacityHolder p {
-    margin-left: 10px;
-  }
-  
-  .profile_reviewsCard {
-    width: 90%;
-    margin: auto;
-  }
-  
-  .profile_reviewsCard .profile_cardHeader {
-    margin-bottom: 10px;
-  }
-  
-  .profile_reviewsCard .profile_cardHeader ion-button {
-    color: #307c51;
-    font-weight: bold;
-    --border-radius: 30px;
-  }
-  
-  .profile_reviewHolder {
-    background-color: white;
-    border-radius: 20px;
-    display: flex;
-    padding: 20px 25px;
-    margin-bottom: 25px;
-  }
-  
-  .profile_reviewerIcon ion-img {
-    width: 70px;
-    height: 70px;
-    background-color: lightgrey;
-    border-radius: 50%;
-    object-fit: cover;
-    overflow: hidden;
-  }
-  
-  .profile_reviewContentHolder {
-    display: flex;
-    margin-left: 20px;
-    flex-direction: column;
-  }
-  
-  .profile_reviewContentHolder ion-text {
-    line-height: 0.75cm;
-  }
-  
-  .profile_reviewContentHolder ion-text span {
-    font-weight: bold;
-  }
-  
-  .profile_reviewerName {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  .profile_profileFooter {
-    padding: 15px 30px;
-    background-color:#d9d9d9;
-  }
-  
-  .profile_editProfileBtn {
-    --border-radius: 30px;
-    height: 45px;
-    --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
-  }
-  
+.profile_card {
+  padding: 19px 22px;
+}
+
+.profile_profileBanner {
+  margin: auto;
+  width: 90%;
+  height: 180px;
+  padding-bottom: 20px;
+  border-radius: 15px;
+  position: relative;
+  background: linear-gradient(180deg, #32a564 25.12%, #185f37 93.35%);
+  margin-bottom: 20px;
+}
+.profile_profileCircle {
+  position: absolute;
+  bottom: -15px;
+  left: -14px;
+  width: 125px;
+  height: 125px;
+  background-color: rgb(254, 254, 254);
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile_profileNameHolder {
+  position: absolute;
+  bottom: 18px;
+  left: 130px;
+  color: white;
+}
+
+.profile_profileName {
+  font-size: 22px;
+  font-weight: 500;
+}
+.profile_verifiedBadgeHolder {
+  display: flex;
+  align-items: center;
+}
+
+.profile_card {
+  background-color: #f0f0f0;
+  border-radius: 15px;
+}
+
+.profile_cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.profile_bioRatingsHolder {
+  padding: 0px 5%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.profile_bioCard {
+  width: 60%;
+}
+
+.profile_ratingsCard {
+  width: 35%;
+}
+
+.profile_ratings {
+  margin-top: 15px;
+}
+
+.profile_ratings span {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.profile_vehiclesCard {
+  width: 90%;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.profile_cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile_cardHeader .profile_manageBtn {
+  --border-radius: 30px;
+  --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+}
+
+.profile_vehicleHolder {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.profile_vehicleHolder div {
+  display: flex;
+  align-items: center;
+}
+
+.profile_vehicleHolder div ion-text {
+  margin-left: 20px;
+}
+.profile_vehicleHolder div ion-badge {
+  margin-left: 10px;
+  --background: gray;
+  padding: 5px 10px;
+}
+
+.profile_seatingCapacityHolder {
+  display: flex;
+  background-color: #d9d9d9;
+  border-radius: 15px;
+  height: 30px;
+  width: 60px;
+  justify-content: center;
+}
+
+.profile_seatingCapacityHolder p {
+  margin-left: 10px;
+}
+
+.profile_reviewsCard {
+  width: 90%;
+  margin: auto;
+}
+
+.profile_reviewsCard .profile_cardHeader {
+  margin-bottom: 10px;
+}
+
+.profile_reviewsCard .profile_cardHeader ion-button {
+  color: #307c51;
+  font-weight: bold;
+  --border-radius: 30px;
+}
+
+.profile_reviewHolder {
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+}
+
+.profile_reviewerIcon ion-img {
+  width: 70px;
+  height: 70px;
+  background-color: lightgrey;
+  border-radius: 50%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+.profile_reviewContentHolder {
+  display: flex;
+  margin-left: 20px;
+  flex-direction: column;
+}
+
+.profile_reviewContentHolder ion-text {
+  line-height: 0.75cm;
+}
+
+.profile_reviewContentHolder ion-text span {
+  font-weight: bold;
+}
+
+.profile_reviewerName {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.profileFooter {
+  padding: 15px 30px;
+  background-color: #d9d9d9;
+}
+
+.editProfileBtn {
+  --border-radius: 30px;
+  height: 50px;
+  --background: linear-gradient(180deg, #2e995c 0%, #30764f 100%);
+}

@@ -31,21 +31,31 @@ const Drive: React.FC = () => {
     <>
       <IonContent>
         {/* <IonButton routerLink="/profile">Hello</IonButton> */}
-        <div className="card" id="driveContent">
-          <h4 className="font">Create Ride</h4>
-          <p className="ContentFont">Begin Your Shared Ride Experience</p>
-          <p className="createNow"> Create Now </p>
-          <IonImg className="Img" src={startRide}></IonImg>
+        <div className="driveCard" id="createNow">
+          <div className="cardLeft">
+            <IonText className="driveCardTitle">Create Ride</IonText>
+            <p className="driveCardSubTitle">
+              Begin Your Shared Ride Experience
+            </p>
+            <IonButton className="createNowBtn">Create Now</IonButton>
+          </div>
+          <div className="cardRight">
+            <IonImg className="driveCardIcon" src={startRide}></IonImg>
+          </div>
+          {/* <p className="drive_createNow"> Create Now </p> */}
         </div>
 
-        <div className="card" id="scheduleRide">
-          <h4 className="font">Schedule Ride</h4>
-          <p className="ContentFont">
-            Set the date, Plan your next shared drive!
-          </p>
-          <p className="schedule"> Schedule </p>
-
-          <IonImg src={scheduleRide} className="Img"></IonImg>
+        <div className="driveCard" id="scheduleRide">
+          <div className="cardLeft">
+            <IonText className="driveCardTitle">Schedule Ride</IonText>
+            <p className="driveCardSubTitle">
+              Set the date, Plan your next shared drive!
+            </p>
+            <IonButton className="scheduleBtn">Schedule</IonButton>
+          </div>
+          <div className="cardRight">
+            <IonImg src={scheduleRide} className="driveCardIcon"></IonImg>
+          </div>
         </div>
       </IonContent>
     </>

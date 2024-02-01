@@ -12,7 +12,7 @@ import {
   IonItem,
   IonText,
 } from "@ionic/react";
-import "./Tab1.css";
+import "./Join.css";
 import {
   useJsApiLoader,
   GoogleMap,
@@ -30,13 +30,14 @@ import {
 import { location, locationSharp, navigateOutline } from "ionicons/icons";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
+import getUser from "../functions/getUser";
 
 type Pointers = {
   lat: any;
   lng: any;
 };
 
-const Tab1: React.FC = () => {
+const Tab1: React.FC = (props: any) => {
   const [center, setCenter] = useState<Pointers>({
     lat: 19.0989,
     lng: 72.8515,
@@ -71,11 +72,14 @@ const Tab1: React.FC = () => {
     console.log("Error: Position: " + err);
   };
 
-  const getUser = async () => {};
   useEffect(() => {
-    console.log();
-    // Call the getUser function
-    getUser();
+    console.log("Join rendered");
+    const getUserDetails = async () => {
+      let user = await getUser();
+      console.log(user);
+    };
+    getUserDetails();
+
     // Get current location on load
     // getDirections();
     if (navigator?.geolocation) {

@@ -25,14 +25,13 @@ const Profile: React.FC = () => {
     "https://sugermint.com/wp-content/uploads/2020/04/Biography-of-Sundar-Pichai.jpg";
   const ionRouterContext = useContext(IonRouterContext);
   const handleEditProfileClick = () => {
-    ionRouterContext.push("/editProfile", "forward");
+    ionRouterContext.push("/editprofile", "forward");
   };
 
   useEffect(() => {
     let user: any = localStorage.getItem("user");
     user = JSON.parse(user);
     setUser(user);
-    console.log(user);
   }, []);
   return (
     <IonPage>
@@ -135,9 +134,9 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </IonContent>
-      <IonFooter className="profile_Footer">
+      <IonFooter className="profileFooter">
         <IonButton
-          className="profile_editProfileBtn"
+          className="editProfileBtn"
           expand="block"
           onClick={handleEditProfileClick}
         >
