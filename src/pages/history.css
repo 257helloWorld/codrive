@@ -1,0 +1,55 @@
+.history_card{
+    margin: auto;
+    margin-top: 30px;
+    padding-top: 30px;
+    width: 90%;
+    height: 207px;
+    border-radius: 22px;
+    background: #EEE;
+    
+}
+.history_dateTime{
+    display: block;
+    color: #000;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    padding-bottom:19px;
+    margin-left: 39px;
+}
+.history_location{
+    margin-left: 30px;
+    display: block;
+    width: 116px;
+    height: 54px;
+    color: #000;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+.history_img{
+    display: block;
+    margin: 1px 25px 35px 25px; 
+    margin-top: 10px;
+
+}
+
+.history_details{
+    display: block;
+    height: 50px;
+    width: 90%;
+    margin: auto;
+    --border-radius: 20px;
+    --background: #171717;
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding-top: 10px;
+}

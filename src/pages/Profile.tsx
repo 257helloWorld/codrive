@@ -8,13 +8,14 @@ import {
   IonHeader,
   IonImg,
   IonPage,
+  IonRouterContext,
   IonSkeletonText,
   IonText,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import "./Profile.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 const Profile: React.FC = () => {
   const [user, setUser] = useState<any>();
   const verifiedBadgeImg = "/assets/images/VerifiedBadge.svg";
@@ -22,6 +23,10 @@ const Profile: React.FC = () => {
   const carImg = "/assets/images/car.svg";
   const userImg =
     "https://sugermint.com/wp-content/uploads/2020/04/Biography-of-Sundar-Pichai.jpg";
+  const ionRouterContext = useContext(IonRouterContext);
+  const handleEditProfileClick = () => {
+    ionRouterContext.push("/editProfile", "forward");
+  };
 
   useEffect(() => {
     let user: any = localStorage.getItem("user");
@@ -46,17 +51,20 @@ const Profile: React.FC = () => {
       <IonContent fullscreen>
         <div style={{ paddingTop: "20px", paddingBottom: "20px" }}>
           {/* Profile Banner & Icon */}
-          <div className="profileBanner">
-            <div className="profileCircle">
-              <IonImg className="profilePic" src={user?.ProfileUrl}></IonImg>
+          <div className="profile_profileBanner">
+            <div className="profile_profileCircle">
+              <IonImg
+                className="profile_profilePic"
+                src={user?.ProfileUrl}
+              ></IonImg>
             </div>
-            <div className="profileNameHolder">
-              <IonText className="profileName">
+            <div className="profile_profileNameHolder">
+              <IonText className="profile_profileName">
                 {user?.FirstName} {user?.LastName}
               </IonText>
-              <div className="verifiedBadgeHolder">
+              <div className="profile_verifiedBadgeHolder">
                 <IonImg
-                  className="verifiedBadge"
+                  className="profile_verifiedBadge"
                   src={verifiedBadgeImg}
                 ></IonImg>
                 <IonText>Verified</IonText>
@@ -65,36 +73,36 @@ const Profile: React.FC = () => {
           </div>
 
           {/* Bio & Ratings Card */}
-          <div className="bioRatingsHolder">
+          <div className="profile_bioRatingsHolder">
             {/* RatingsCard */}
-            <div className="card ratingsCard">
-              <IonText className="cardTitle">Ratings</IonText>
+            <div className="profile_card profile_ratingsCard">
+              <IonText className="profile_cardTitle">Ratings</IonText>
               <br />
-              <p className="ratings">
+              <p className="profile_ratings">
                 <span>{user?.Ratings}</span> / 5
               </p>
             </div>
             {/* BioCard */}
-            <div className="card bioCard">
-              <IonText className="cardTitle">Bio</IonText>
+            <div className="profile_card profile_bioCard">
+              <IonText className="profile_cardTitle">Bio</IonText>
               <br />
               <IonText>{user?.Bio}</IonText>
             </div>
           </div>
 
           {/* Vehicles */}
-          <div className="card vehiclesCard">
-            <div className="cardHeader">
-              <IonText className="cardTitle">My Vehicles</IonText>
-              <IonButton className="manageBtn">Manage</IonButton>
+          <div className="profile_card profile_vehiclesCard">
+            <div className="profile_cardHeader">
+              <IonText className="profile_cardTitle">My Vehicles</IonText>
+              <IonButton className="profile_manageBtn">Manage</IonButton>
             </div>
-            <div className="vehicleHolder">
+            <div className="profile_vehicleHolder">
               <div>
-                <IonImg src={carImg} className="carIcon"></IonImg>
+                <IonImg src={carImg} className="profile_carIcon"></IonImg>
                 <IonText>{user?.Vehicles[0].VehicleName}</IonText>
                 {/* <IonBadge>Primary</IonBadge> */}
               </div>
-              <div className="seatingCapacityHolder">
+              <div className="profile_seatingCapacityHolder">
                 <IonImg src={personImg}></IonImg>
                 <p>{user?.Vehicles[0].SeatingCapacity}</p>
               </div>
@@ -102,23 +110,23 @@ const Profile: React.FC = () => {
           </div>
 
           {/* Reviews */}
-          <div className="card reviewsCard">
-            <div className="cardHeader">
-              <IonText className="cardTitle">Reviews</IonText>
-              <IonButton className="viewAllBtn" fill="clear">
+          <div className="profile_card profile_reviewsCard">
+            <div className="profile_cardHeader">
+              <IonText className="profile_cardTitle">Reviews</IonText>
+              <IonButton className="profile_viewAllBtn" fill="clear">
                 View All
               </IonButton>
             </div>
             {user?.Reviews.map((review: any) => (
-              <div className="reviewHolder">
-                <div className="reviewerIcon">
+              <div className="profile_reviewHolder">
+                <div className="profile_reviewerIcon">
                   <IonImg src={review.Reviewer.ProfileUrl}></IonImg>
                 </div>
-                <div className="reviewContentHolder">
-                  <IonText className="reviewerName">
+                <div className="profile_reviewContentHolder">
+                  <IonText className="profile_reviewerName">
                     {review.Reviewer.Name}
                   </IonText>
-                  <IonText className="review">
+                  <IonText className="profile_review">
                     {review.Feedback} <span>({review.Ratings}/5)</span>
                   </IonText>
                 </div>
@@ -127,8 +135,12 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </IonContent>
-      <IonFooter className="profileFooter">
-        <IonButton className="editProfileBtn" expand="block">
+      <IonFooter className="profile_Footer">
+        <IonButton
+          className="profile_editProfileBtn"
+          expand="block"
+          onClick={handleEditProfileClick}
+        >
           Edit Profile
         </IonButton>
       </IonFooter>

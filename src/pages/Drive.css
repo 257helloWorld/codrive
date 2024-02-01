@@ -1,0 +1,92 @@
+
+.font{
+    margin:32px 0px 0px 35px ;
+    color: #000;
+    font-family: Poppins;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+.ContentFont{
+    margin:8px 0px 0px 35px ;
+    width: 30%;
+    color: #000;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.Img{ 
+    /* background: url("/assets/images/drive.png"), lightgray 50% / cover no-repeat; */
+    width: auto;
+    height: 150px;
+    display: block;
+    margin-top: -120px;
+    margin-left: 270px;
+    opacity: 50%;
+    /* margin-right: 10px; */
+    /* background: lightgray 50% / cover no-repeat; */
+} 
+/* .DriveImg
+{
+    height: 170px;
+    width: 30%;
+    margin-Left: auto;
+    margin-Right: 30px;
+} */
+.createNow{
+    margin:16px 0px 0px 35px ;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #2E995C 0%, #30764F 100%);
+    width: 35%;/* width: 117px; */
+    height: 20%;/* height: 30px; */
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px;
+    text-align:center;
+}
+.schedule{
+    margin:16px 0px 0px 35px ;
+    border-radius: 15px;
+background: linear-gradient(180deg, #777 0%, #252525 100%);width: 35%;/* width: 117px; */
+    height: 20%;/* height: 30px; */
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px;
+    text-align:center;
+}
+#driveContent
+{   width: 90%;
+    height: 200px;
+    background-color: #e1e1e1;
+    margin: auto;
+    padding-left: 30px;
+    border-radius: 15px;
+    margin-top: 80px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+    background: linear-gradient(90deg, rgba(47, 141, 89, 0.48) 0.32%, rgba(49, 154, 95, 0.14) 99.61%);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.25);
+}
+#scheduleRide
+{   width: 90%;
+    height: 200px;
+    background-color: #e1e1e1;
+    margin: auto;
+    padding-left: 30px;
+    border-radius: 15px;
+    /* display: flex; */
+    /* align-items: center; */
+    border-radius: 20px;
+    background: linear-gradient(90deg, rgba(58, 58, 58, 0.38) 0%, rgba(58, 58, 58, 0.07) 100%);
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.25);
+}

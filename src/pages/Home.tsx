@@ -14,12 +14,14 @@ import {
   IonTabButton,
   IonPage,
   IonRouterContext,
+  IonButton,
+  IonMenuToggle,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import React, { useContext, useEffect, useState } from "react";
 import { Route, Redirect } from "react-router";
 import Tab1 from "./Tab1";
-import Tab2 from "./Tab2";
+import Tab2 from "./Drive";
 import getUser from "../functions/getUser";
 
 function Home() {
@@ -44,6 +46,14 @@ function Home() {
     ionRouterContext.push("/profile", "forward");
   };
 
+  const handleHistoryClick = () => {
+    ionRouterContext.push("/history", "forward");
+  };
+
+  const handleRideInfoClick = () => {
+    ionRouterContext.push("/RideInfo", "forward");
+  };
+
   return (
     <>
       <IonMenu contentId="main-content">
@@ -52,9 +62,17 @@ function Home() {
             <IonTitle>Menu Content</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent className="ion-padding">
-          <IonText>This is menu</IonText>
-        </IonContent>
+        <IonMenuToggle>
+          <IonButton className="home_menuButton" onClick={handleHistoryClick}>
+            History
+          </IonButton>
+        </IonMenuToggle>
+        {/* <IonMenuToggle>
+          <IonButton className="home_menuButton" onClick={handleRideInfoClick}>
+            RideInfo
+          </IonButton>
+        </IonMenuToggle> */}
+        <IonContent className="ion-padding"></IonContent>
       </IonMenu>
 
       <IonPage id="main-content">
