@@ -8,6 +8,7 @@ import {
   IonHeader,
   IonIcon,
   IonImg,
+  IonLoading,
   IonMenuButton,
   IonPage,
   IonRouterContext,
@@ -25,13 +26,33 @@ import {
   LoadScript,
 } from "@react-google-maps/api";
 import { useContext, useEffect, useState } from "react";
+import getHistory from "../functions/getHistory";
+import { Link } from "react-router-dom";
 
-const Tab: React.FC = () => {
+const History: React.FC = () => {
   const loopArray = [1, 2, 3, 4];
   const ionRouterContext = useContext(IonRouterContext);
-  const handleRideInfoClick = () => {
-    ionRouterContext.push("/rideInfo", "forward");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [history, setHistory] = useState<any>();
+
+  useEffect(() => {
+    setIsOpen(true);
+    const fetchHistory = async () => {
+      let history = await getHistory();
+      console.log("History", history);
+      localStorage.setItem("history", JSON.stringify(history));
+      setHistory(history);
+      setIsOpen(false);
+    };
+    fetchHistory();
+  }, []);
+
+  const handleRideInfoClick = (ride: any) => {
+    console.log("ride", ride);
+    localStorage.setItem("rideInfo", JSON.stringify(ride));
+    ionRouterContext.push("/rideinfo");
   };
+
   return (
     <>
       <IonPage>
@@ -47,32 +68,54 @@ const Tab: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
-          {loopArray.map((key) => (
-            <div className="historyCard" key={key}>
-              <IonText className="dateTime">28 Sep, 23 | 13 : 15</IonText>
-              <div className="locationsContainer">
-                <IonText className="cardLocation">
-                  M. L. Dahanukar College of Commerce, Vile ...
-                </IonText>
-                <IonImg src={navigate} className="navigateIcon"></IonImg>
-                <IonText className="cardLocation">
-                  Chhatrapati Shivaji Maharaj Chowk, Andheri (E)
-                </IonText>
+          {history &&
+            history.map((ride: any) => (
+              <div className="historyCard" key={ride}>
+                <IonText className="dateTime">{ride?.StartTime}</IonText>
+                <div className="locationsContainer">
+                  <IonText className="cardLocation">{ride?.Source[2]}</IonText>
+                  <IonImg src={navigate} className="navigateIcon"></IonImg>
+                  <IonText className="cardLocation">
+                    {ride?.Destination[2]}
+                  </IonText>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingBottom: "15px",
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "12px",
+                      width: "12px",
+                      backgroundColor: "green",
+                      borderRadius: "50%",
+                      display: "flex",
+                      marginRight: "10px",
+                    }}
+                  ></div>
+                  <IonText>{ride?.Status}</IonText>
+                </div>
+                <IonButton
+                  onClick={() => {
+                    handleRideInfoClick(ride);
+                  }}
+                  className="viewDetailsBtn"
+                >
+                  View Details
+                </IonButton>
+                <Link to="/rideInfo">View Details</Link>
               </div>
-              <IonButton
-                onClick={handleRideInfoClick}
-                className="viewDetailsBtn"
-              >
-                View Details
-              </IonButton>
-            </div>
-          ))}
+            ))}
 
           <p style={{ paddingBottom: "30px" }}></p>
         </IonContent>
       </IonPage>
+      <IonLoading message={"Loading..."} isOpen={isOpen}></IonLoading>
     </>
   );
 };
 
-export default Tab;
+export default History;

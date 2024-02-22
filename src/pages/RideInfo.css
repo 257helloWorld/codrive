@@ -3,6 +3,7 @@
   margin-top: 34px;
   margin-bottom: 0px;
   height: 15%;
+  margin-left: 30px;
 }
 .rideInfo_img {
   width: 32px;
@@ -18,6 +19,7 @@
   font-weight: 600;
   line-height: normal;
   width: 35%;
+  margin-left: 20px;
   /* 185px */
 }
 .rideInfo_font2 {

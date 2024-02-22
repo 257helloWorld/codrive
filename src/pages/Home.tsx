@@ -49,15 +49,11 @@ function Home() {
   }, []);
 
   const handleProfileClick = () => {
-    ionRouterContext.push("/profile", "forward");
+    ionRouterContext.push("/profile", "forward", "push");
   };
 
   const handleHistoryClick = () => {
-    ionRouterContext.push("/history", "forward");
-  };
-
-  const handleRideInfoClick = () => {
-    ionRouterContext.push("/RideInfo", "forward");
+    ionRouterContext.push("/history", "forward", "push");
   };
 
   return (

@@ -10,6 +10,7 @@ import {
   IonImg,
   IonMenuButton,
   IonPage,
+  IonRouterContext,
   IonText,
   IonTitle,
   IonToolbar,
@@ -29,9 +30,20 @@ import {
   StandaloneSearchBox,
   LoadScript,
 } from "@react-google-maps/api";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const RideInfo: React.FC = () => {
+  const routerContext = useContext(IonRouterContext);
+  const [history, setHistory] = useState<any>();
+
+  useEffect(() => {
+    let data = localStorage.getItem("rideInfo");
+    if (data != null) {
+      data = JSON.parse(data);
+    }
+    setHistory(data);
+  }, []);
+
   return (
     <>
       <IonPage>
@@ -55,24 +67,14 @@ const RideInfo: React.FC = () => {
             </p>
             <div className="rideInfo_container">
               <IonImg src={locationGrey} className="rideInfo_img"></IonImg>
-              <p className="rideInfo_text">
-                M. L. Dahanukar College of Commerce, Vile Parle East
-              </p>
-              <p className="rideInfo_font2">
-                28 Sep, 23
-                <b> 13 : 15</b>
-              </p>
+              <p className="rideInfo_text">{history?.Source[2]}</p>
+              <p className="rideInfo_font2">{history?.StartTime}</p>
             </div>
             <div className="rideInfo_container">
               <IonImg src={locationGreen} className="rideInfo_img"></IonImg>
 
-              <p className="rideInfo_text">
-                Chhatrapati Shivaji Maharaj Chowk, Andheri (E)
-              </p>
-              <p className="rideInfo_font2">
-                28 Sep, 23
-                <b> 13 : 36</b>
-              </p>
+              <p className="rideInfo_text">{history?.Destination[2]}</p>
+              <p className="rideInfo_font2">{history?.EndTime}</p>
             </div>
             <p className="rideInfo_font3">
               <b>Co Riders</b>
@@ -81,18 +83,21 @@ const RideInfo: React.FC = () => {
               <div className="rideInfo_profileIcon1">
                 <IonImg
                   className="rideInfo_profileImage"
-                  src={corider1}
+                  src={history?.Driver?.ProfileUrl}
                 ></IonImg>
               </div>
               <div className="rideInfo_circle">
                 <IonImg className="rideInfo_wheelImage" src={wheel}></IonImg>
               </div>
-              <div className="rideInfo_profileIcon1">
-                <IonImg
-                  className="rideInfo_profileImage"
-                  src={corider2}
-                ></IonImg>
-              </div>
+              {history?.CoRiders &&
+                history?.CoRiders.map((corider: any) => (
+                  <div className="rideInfo_profileIcon1" key={corider}>
+                    <IonImg
+                      className="rideInfo_profileImage"
+                      src={corider?.CoRider?.ProfileUrl}
+                    ></IonImg>
+                  </div>
+                ))}
             </div>
             {/* <p className="rideInfo_font3" style={{ marginTop: "-20px" }}>
             <b>Payment</b>
