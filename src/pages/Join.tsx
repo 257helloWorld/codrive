@@ -11,6 +11,7 @@ import {
   IonInput,
   IonItem,
   IonText,
+  IonRouterContext,
 } from "@ionic/react";
 import "./Join.css";
 import {
@@ -29,7 +30,7 @@ import {
 } from "@react-google-maps/api";
 import { location, locationSharp, navigateOutline } from "ionicons/icons";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import getUser from "../functions/getUser";
 
 type Pointers = {
@@ -37,7 +38,7 @@ type Pointers = {
   lng: any;
 };
 
-const Tab1: React.FC = (props: any) => {
+const Tab1 = (props: any) => {
   const [center, setCenter] = useState<Pointers>({
     lat: 19.0989,
     lng: 72.8515,
@@ -60,6 +61,8 @@ const Tab1: React.FC = (props: any) => {
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY,
     libraries: mapLibraries,
   });
+
+  const ionRouterContext = useContext(IonRouterContext);
 
   const showPos = (position: any) => {
     // setCenter({
@@ -157,6 +160,7 @@ const Tab1: React.FC = (props: any) => {
     let lng = newCenter?.lng();
     // setCenter({ lat: lat, lng: lng });
   };
+
   return (
     <>
       <IonContent>
@@ -262,8 +266,10 @@ const Tab1: React.FC = (props: any) => {
                 ></IonIcon>
                 <IonInput
                   id="destinationInput"
-                  disabled={true}
+                  disabled={false}
+                  value={""}
                   placeholder="Enter Destination"
+                  onClick={props.hdc}
                 ></IonInput>
               </IonItem>
             </div>

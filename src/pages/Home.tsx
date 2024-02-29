@@ -56,6 +56,10 @@ function Home() {
     ionRouterContext.push("/history", "forward", "push");
   };
 
+  const handleDestinationClick = () => {
+    ionRouterContext.push("/destination", "forward");
+  };
+
   return (
     <>
       <IonMenu contentId="main-content">
@@ -110,7 +114,7 @@ function Home() {
               >
                 <IonRouterOutlet>
                   <Route exact path="/home/tab1">
-                    <Tab1 />
+                    <Tab1 hdc={handleDestinationClick} />
                   </Route>
                   <Route exact path="/home/tab2">
                     <Tab2 />

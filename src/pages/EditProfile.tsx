@@ -26,8 +26,61 @@ import {
   LoadScript,
 } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
+import ReactCrop from "react-image-crop";
 
-const Tab: React.FC = () => {
+const EditProfile: React.FC = () => {
+  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [crop, setCrop] = useState<any>({ aspect: 1 / 1 });
+  const [croppedImage, setCroppedImage] = useState<any>(null);
+
+  const onFileSelected = (event: any) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+  };
+
+  const onCropComplete = (crop: any) => {
+    // Handle crop complete event
+  };
+
+  const onCropChange = (crop: any) => {
+    setCrop(crop);
+  };
+
+  const onCropImage = () => {
+    if (selectedImage && crop.width && crop.height) {
+      getCroppedImage();
+    }
+  };
+
+  const getCroppedImage = () => {
+    const image = new Image();
+    image.src = URL.createObjectURL(selectedImage);
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    image.onload = () => {
+      canvas.width = crop.width;
+      canvas.height = crop.height;
+      if (!ctx) {
+        return;
+      }
+      ctx.drawImage(
+        image,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height
+      );
+      const croppedImageUrl = canvas.toDataURL("image/jpeg");
+      setCroppedImage(croppedImageUrl);
+    };
+  };
+
   return (
     <>
       <IonPage>
@@ -43,6 +96,14 @@ const Tab: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent>
+          {/* <ReactCrop
+            // src={URL.createObjectURL(selectedImage)}
+            crop={crop}
+            // onImageLoaded={onCropComplete}
+            onComplete={onCropComplete}
+            onChange={onCropChange}
+          /> */}
+
           <div className="editProfile_Photo">
             <div className="eP_photoBg">
               <IonImg src={camera} className="eP_camera"></IonImg>
@@ -103,4 +164,4 @@ const Tab: React.FC = () => {
   );
 };
 
-export default Tab;
+export default EditProfile;

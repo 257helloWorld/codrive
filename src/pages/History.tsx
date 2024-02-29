@@ -18,7 +18,8 @@ import {
 } from "@ionic/react";
 import ExploreContainer from "../components/ExploreContainer";
 import "./History.css";
-import navigate from "/assets/images/navigate.svg";
+import navigateGreen from "/assets/images/navigateGreen.svg";
+import navigateGray from "/assets/images/navigateGray.svg";
 import { navigateOutline } from "ionicons/icons";
 import {
   Autocomplete,
@@ -73,11 +74,36 @@ const History: React.FC = () => {
               <div className="historyCard" key={ride}>
                 <IonText className="dateTime">{ride?.StartTime}</IonText>
                 <div className="locationsContainer">
-                  <IonText className="cardLocation">{ride?.Source[2]}</IonText>
-                  <IonImg src={navigate} className="navigateIcon"></IonImg>
-                  <IonText className="cardLocation">
-                    {ride?.Destination[2]}
-                  </IonText>
+                  <div className="toDiv">
+                    <div style={{ display: "flex" }}>
+                      <IonImg
+                        src={navigateGreen}
+                        className="navigateIcon"
+                      ></IonImg>
+                    </div>
+                    <div>
+                      <IonText>To</IonText>
+                      <IonText className="cardLocation">
+                        {ride?.Destination[2]}
+                      </IonText>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="fromDiv">
+                  <div style={{ display: "flex" }}>
+                    <IonImg
+                      src={navigateGray}
+                      color={""}
+                      className="navigateIcon"
+                    ></IonImg>
+                  </div>
+                  <div>
+                    <IonText>From</IonText>
+                    <IonText className="cardLocation">
+                      {ride?.Source[2]}
+                    </IonText>
+                  </div>
                 </div>
                 <div
                   style={{
@@ -88,15 +114,26 @@ const History: React.FC = () => {
                 >
                   <div
                     style={{
-                      height: "12px",
-                      width: "12px",
-                      backgroundColor: "green",
-                      borderRadius: "50%",
                       display: "flex",
-                      marginRight: "10px",
+                      alignItems: "center",
+                      margin: "20px 0 10px 0",
+                      backgroundColor: "#e4e4e4",
+                      padding: "7px 20px",
+                      borderRadius: "30px",
                     }}
-                  ></div>
-                  <IonText>{ride?.Status}</IonText>
+                  >
+                    <div
+                      style={{
+                        height: "12px",
+                        width: "12px",
+                        backgroundColor: "green",
+                        borderRadius: "50%",
+                        display: "flex",
+                        marginRight: "10px",
+                      }}
+                    ></div>
+                    <IonText>{ride?.Status}</IonText>
+                  </div>
                 </div>
                 <IonButton
                   onClick={() => {
@@ -106,7 +143,6 @@ const History: React.FC = () => {
                 >
                   View Details
                 </IonButton>
-                <Link to="/rideInfo">View Details</Link>
               </div>
             ))}
 

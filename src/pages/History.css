@@ -55,16 +55,30 @@
 
 .locationsContainer {
   display: flex;
+  flex-direction: column;
   margin: 25px 0px;
   justify-content: space-between;
 }
 
 .navigateIcon {
-  width: 10%;
-  max-width: 30px;
+  margin: auto;
+  margin-right: 20px;
+  width: 25px;
 }
 
 .cardLocation {
-  width: 40%;
+  width: 80;
   font-weight: bold;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.toDiv {
+  display: flex;
+}
+
+.fromDiv {
+  display: flex;
 }
