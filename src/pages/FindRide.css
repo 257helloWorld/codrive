@@ -1,0 +1,49 @@
+.outerCircle {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #000;
+  display: flex;
+}
+
+.innerCircle {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: #fff;
+  margin: auto;
+}
+
+.searchModal {
+  display: flex;
+  padding: 20px;
+  flex-direction: column;
+}
+
+.btnHolder {
+  margin: auto;
+  width: 100%;
+}
+
+.searchModal .charges {
+  display: flex;
+  height: 50px;
+  border-radius: 30px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  background-color: rgb(235, 235, 235);
+}
+
+.charges .amount {
+  color: green;
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.searchModal .btnHolder ion-button {
+  --background: green;
+  --border-radius: 30px;
+  height: 50px;
+  width: 100%;
+}

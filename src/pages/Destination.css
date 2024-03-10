@@ -1,34 +1,23 @@
-.bottomTab {
-  width: 100%;
-  margin: 0;
+.modalToolbar {
+  padding: 0 15px;
 }
-.div1 {
-  width: 120px;
-  background-color: #e1e1e1;
-  border-radius: 15px;
-  height: 40px;
-  margin: auto;
-  margin-right: 7px;
-  align-items: center;
-  padding: 0;
+
+.confirmButton {
+  --background: green;
+  --border-radius: 20px;
 }
-.D_img {
-  height: 30px;
-  padding-bottom: 7px;
+
+.confirmDisabled {
+  --background: rgb(95, 95, 95);
 }
-.focused {
-  height: 50px !important;
-  width: 50px !important;
-  transition: height 0.3s !important;
+
+.cancelButton {
+  --background: rgba(178, 178, 178, 0.307);
+  --color: black;
+  --border-radius: 20px;
 }
-.focused1 {
-  height: 50px !important;
-  width: 50px !important;
-  transition: height 0.3s !important;
-}
-.input {
-  /* border: none; */
-  outline: none;
+.placeInputForm {
+  position: sticky;
 }
 
 .locationIconCircle {
@@ -46,7 +35,14 @@
   font-size: 18px;
 }
 
+.suggestionsText {
+  margin-left: 30px;
+  font-size: 17px;
+}
+
 .placeFormattedAddress {
+  margin-top: 5px;
+  font-size: 14px;
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -54,7 +50,7 @@
 }
 
 .distanceText {
-  font-size: 15px;
+  font-size: 13px;
   text-align: center;
   margin-top: 8px;
 }
@@ -64,4 +60,113 @@
   flex-direction: column;
   justify-content: center;
   justify-items: center;
+  margin-right: 20px;
+}
+
+.placeItem {
+  padding: 15px 7%;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.sourceBlock {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  width: 90%;
+}
+
+.blockLabel {
+  font-size: 14px;
+}
+.placeInputHolder {
+  background-color: #e1e1e1;
+  display: flex;
+  margin: 20px 0;
+  margin-left: 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.placeInputHolder .placeInput {
+  /* --border-color: transparent; */
+  --highlight-color-focused: transparent;
+  --highlight-color-invalid: transparent;
+  caret-color: black;
+}
+
+.placeInputHolder .sourceCircle {
+  height: 10px;
+  width: 15px;
+  border-radius: 100%;
+  margin: 0 20px;
+  position: relative;
+}
+
+.placeInputHolder .selectedCircle {
+  background-color: green;
+}
+
+.placeInputHolder .deselectedCircle {
+  background-color: #9c9c9c;
+}
+
+.placeInputHolder .destinationNavigate {
+  width: 20px;
+  margin: 0 20px;
+}
+
+.selectedPlaceInput {
+  border: 2px solid green;
+}
+
+.deselectedPlaceInput {
+  border: 2px solid white;
+}
+
+.sourceOptionsHolder {
+  display: flex;
+  width: 90%;
+  margin: auto;
+  justify-content: space-around;
+}
+
+.sourceOptionsHolder .button {
+  width: 45%;
+  display: flex;
+  background-color: #e5e5e5;
+  padding: 5px 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 15px;
+  position: relative;
+}
+
+.sourceOptionsHolder .button ion-icon {
+  margin-right: 7px;
+}
+
+.sourceOptionsHolder .locateOnMapButton {
+  width: 40%;
+}
+
+.line {
+  height: 1px;
+  width: 90%;
+  margin: auto;
+  margin-top: 20px;
+  background-color: rgb(193, 193, 193);
+}
+
+.roundedRipple {
+  border-radius: 15px;
+}
+
+.placesList {
+  height: "50vh";
 }

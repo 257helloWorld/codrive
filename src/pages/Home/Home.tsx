@@ -16,13 +16,25 @@ import {
   IonRouterContext,
   IonButton,
   IonMenuToggle,
+  IonModal,
+  IonAvatar,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonSearchbar,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import React, { StrictMode, useContext, useEffect, useState } from "react";
+import React, {
+  StrictMode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Route, Redirect } from "react-router";
 import Tab1 from "./Join";
 import Tab2 from "./Drive";
-import getUser from "../functions/getUser";
+import getUser from "../../functions/getUser";
 
 function Home() {
   const [selectedTab, setSelectedTab] = useState<any>("tab1");
@@ -35,6 +47,8 @@ function Home() {
   const steeringWheelGreen = "/assets/images/steeringWheelGreen.svg";
 
   const ionRouterContext = useContext(IonRouterContext);
+
+  const modal = useRef<HTMLIonModalElement>(null);
 
   useEffect(() => {
     console.log("home rendered");
@@ -60,6 +74,10 @@ function Home() {
     ionRouterContext.push("/destination", "forward");
   };
 
+  const handleJoinMapClick = () => {
+    ionRouterContext.push("/findride", "forward");
+  };
+
   return (
     <>
       <IonMenu contentId="main-content">
@@ -72,6 +90,7 @@ function Home() {
           <IonButton className="home_menuButton" onClick={handleHistoryClick}>
             History
           </IonButton>
+          {/* <IonButton id="open-modal">Open Modal</IonButton> */}
         </IonMenuToggle>
         {/* <IonMenuToggle>
           <IonButton className="home_menuButton" onClick={handleRideInfoClick}>
@@ -114,7 +133,10 @@ function Home() {
               >
                 <IonRouterOutlet>
                   <Route exact path="/home/tab1">
-                    <Tab1 hdc={handleDestinationClick} />
+                    <Tab1
+                      hdc={handleDestinationClick}
+                      handleJoinMapClick={handleJoinMapClick}
+                    />
                   </Route>
                   <Route exact path="/home/tab2">
                     <Tab2 />

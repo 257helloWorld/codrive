@@ -1,0 +1,109 @@
+#destinationInputHolder {
+  height: 52px;
+  --background: #e5e5e5;
+  border-radius: 13px;
+  margin: auto;
+  width: 95%;
+}
+
+#destinationInput {
+  opacity: 1;
+  color: black;
+}
+
+.locationPin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  top: calc(50% - 58px);
+  left: calc(50% - 28px);
+  z-index: 1;
+}
+
+.locationPin div {
+  border-radius: 15px;
+  background-color: #000;
+  padding: 1px 10px;
+}
+
+.locationPin div ion-text {
+  color: #fff;
+  font-size: 12px;
+}
+
+.locationPin ion-icon {
+  height: 32px;
+  width: 32px;
+  margin: auto;
+}
+
+#map:focus {
+  outline: none;
+  border: none;
+}
+
+.modalContainer {
+  padding: 20px;
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.modalButtonsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modalButton {
+  width: 48%;
+  height: 40px;
+  --border-radius: 30px;
+}
+
+.modalButtonsContainer .changeButton {
+  --background: lightgray;
+  --color: black;
+}
+.modalButtonsContainer .confirmButton {
+  --background: green;
+}
+
+.confirmModal {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(100%);
+  z-index: 999;
+}
+
+.open {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+.closed {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}

@@ -16,7 +16,7 @@ const getPlaces = async (query: string, src_lat: number, src_lng: number) => {
 
     places = data.data;
   } catch (error) {
-    console.error(error);
+    return [];
   }
   return places;
 };

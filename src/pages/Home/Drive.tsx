@@ -13,7 +13,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
+import ExploreContainer from "../../components/ExploreContainer";
 import "./Drive.css";
 import startRide from "/assets/images/drive.png";
 import scheduleRide from "/assets/images/calendar.png";

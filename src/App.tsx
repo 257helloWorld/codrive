@@ -41,12 +41,14 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { useState } from "react";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import History from "./pages/History";
+import Home from "./pages/Home/Home";
+import Profile from "./pages/Profile/Profile";
+import History from "./pages/History/History";
 import RideInfo from "./pages/RideInfo";
-import EditProfile from "./pages/EditProfile";
+import EditProfile from "./pages/Profile/EditProfile";
 import Destination from "./pages/Destination";
+import JoinMap from "./pages/FindRide";
+import FindRide from "./pages/FindRide";
 
 setupIonicReact();
 
@@ -61,6 +63,7 @@ const App: React.FC = () => {
           <Route path="/rideinfo" component={RideInfo} />
           <Route path="/editprofile" component={EditProfile} />
           <Route path="/destination" component={Destination} />
+          <Route path="/findride" component={FindRide} />
 
           <Route exact path="/">
             <Redirect to="/home" />

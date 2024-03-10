@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
+import ExploreContainer from "../../components/ExploreContainer";
 import "./History.css";
 import navigateGreen from "/assets/images/navigateGreen.svg";
 import navigateGray from "/assets/images/navigateGray.svg";
@@ -27,7 +27,7 @@ import {
   LoadScript,
 } from "@react-google-maps/api";
 import { useContext, useEffect, useState } from "react";
-import getHistory from "../functions/getHistory";
+import getHistory from "../../functions/getHistory";
 import { Link } from "react-router-dom";
 
 const History: React.FC = () => {

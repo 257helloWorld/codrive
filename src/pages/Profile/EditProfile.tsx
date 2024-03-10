@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import ExploreContainer from "../components/ExploreContainer";
+import ExploreContainer from "../../components/ExploreContainer";
 import "./EditProfile.css";
 import camera from "/assets/images/camera.svg";
 import { navigateOutline } from "ionicons/icons";
