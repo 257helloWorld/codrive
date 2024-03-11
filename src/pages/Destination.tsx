@@ -2,6 +2,7 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFooter,
   IonHeader,
   IonIcon,
   IonInput,
@@ -79,6 +80,7 @@ const Destination = (props: any) => {
       props.setSourceInputValue(place.name);
       props.setOrigin(placeLatLng);
       localStorage.setItem("sourceLatLng", JSON.stringify(placeLatLng));
+      localStorage.setItem("sourceInput", props.sourceInputValue);
       setIsSourceValid(true);
     } else if (isDestinationFocused) {
       let formattedAddress = place.name + ", " + place.formatted_address;
@@ -86,6 +88,7 @@ const Destination = (props: any) => {
       props.setDestination(placeLatLng);
       setIsDestinationValid(true);
       localStorage.setItem("destinationLatLng", JSON.stringify(placeLatLng));
+      localStorage.setItem("destinationInput", props.destinationInputValue);
       if (isSourceValid && isDestinationValid) {
         props.modal?.current?.setCurrentBreakpoint(0);
         props.renderDirection();
@@ -183,6 +186,7 @@ const Destination = (props: any) => {
     <>
       {/* <IonPage> */}
       <IonModal
+        id="destinationModal"
         ref={props.modal}
         isOpen={props.isModalOpen}
         initialBreakpoint={0.8}
@@ -192,30 +196,19 @@ const Destination = (props: any) => {
         onIonBreakpointDidChange={handleBreakpointChange}
       >
         <IonContent>
-          <IonHeader>
-            <IonToolbar className="modalToolbar">
-              <IonButton
-                slot="start"
-                className="cancelButton"
-                onClick={handleOnCancelClick}
-              >
-                Cancel
-              </IonButton>
-              <IonTitle style={{ textAlign: "center" }}>
-                {selectedInput}
-              </IonTitle>
-              <IonButton
-                slot="end"
-                className={`confirmButton ${
-                  confirmDisabled ? "confirmDisabled" : ""
-                }`}
-                disabled={confirmDisabled}
-                onClick={handleConfirmClick}
-              >
-                Confirm
-              </IonButton>
-            </IonToolbar>
-          </IonHeader>
+          <IonTitle style={{ textAlign: "center", marginTop: "20px" }}>
+            {selectedInput}
+          </IonTitle>
+          {/* <IonButton
+            slot="end"
+            className={`confirmButton ${
+              confirmDisabled ? "confirmDisabled" : ""
+            }`}
+            disabled={confirmDisabled}
+            onClick={handleConfirmClick}
+          >
+            Confirm
+          </IonButton> */}
           <div className="placeInputForm">
             <div className="sourceBlock">
               <IonText className="blockLabel">From</IonText>
@@ -249,6 +242,7 @@ const Destination = (props: any) => {
                       setIsSourceValid(false);
                       props.setIsSourceValid(false);
                       props.setSourceInputValue("");
+                      setPlaces([]);
                     }}
                     style={{ marginLeft: "12px" }}
                   >
@@ -306,6 +300,7 @@ const Destination = (props: any) => {
                     onClick={() => {
                       setIsDestinationValid(false);
                       props.setDestinationInputValue("");
+                      setPlaces([]);
                     }}
                     style={{ marginLeft: "12px" }}
                   >
@@ -314,6 +309,17 @@ const Destination = (props: any) => {
                 </IonButtons>
               </div>
             </div>
+          </div>
+          <div className="actionButtonsHolder">
+            <IonButton onClick={handleOnCancelClick}>Cancel</IonButton>
+            <IonButton
+              onClick={handleConfirmClick}
+              className={`confirmButton ${
+                confirmDisabled ? "confirmDisabled" : ""
+              }`}
+            >
+              Next
+            </IonButton>
           </div>
           <IonText className="suggestionsText">Suggestions</IonText>
           <div className="placesList">
