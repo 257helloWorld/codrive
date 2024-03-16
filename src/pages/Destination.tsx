@@ -2,15 +2,12 @@ import {
   IonButton,
   IonButtons,
   IonContent,
-  IonFooter,
-  IonHeader,
   IonIcon,
   IonInput,
   IonModal,
   IonRippleEffect,
   IonText,
   IonTitle,
-  IonToolbar,
 } from "@ionic/react";
 import "./Destination.css";
 import { closeOutline, locate, locationOutline, map } from "ionicons/icons";
@@ -27,8 +24,6 @@ const Destination = (props: any) => {
   const [isDestinationFocused, setIsDestinationFocused] = useState(true);
   const [selectedInput, setSelectedInput] = useState<string>("Destination");
   const [places, setPlaces] = useState<any[]>();
-  const [error, setError] = useState<any>();
-  const [readonlySource, setReadonlySource] = useState<boolean>(false);
   const [confirmDisabled, setConfirmDisabled] = useState<boolean>(true);
   const [isSourceValid, setIsSourceValid] = useState<boolean>();
   const [isDestinationValid, setIsDestinationValid] = useState<boolean>(false);
@@ -62,7 +57,7 @@ const Destination = (props: any) => {
     setPlaces(places.places);
   };
 
-  const handleConfirmClick = () => {
+  const handleNextClick = () => {
     props.modal.current?.setCurrentBreakpoint(0);
     props.renderDirection();
   };
@@ -74,13 +69,10 @@ const Destination = (props: any) => {
       lng: place.geometry.location.lng,
     };
     if (isSourceFocused) {
-      /* 
-      if source input is selected, set input text to selected place name
-       */
       props.setSourceInputValue(place.name);
       props.setOrigin(placeLatLng);
       localStorage.setItem("sourceLatLng", JSON.stringify(placeLatLng));
-      localStorage.setItem("sourceInput", props.sourceInputValue);
+      localStorage.setItem("sourceInput", place.name);
       setIsSourceValid(true);
     } else if (isDestinationFocused) {
       let formattedAddress = place.name + ", " + place.formatted_address;
@@ -88,11 +80,7 @@ const Destination = (props: any) => {
       props.setDestination(placeLatLng);
       setIsDestinationValid(true);
       localStorage.setItem("destinationLatLng", JSON.stringify(placeLatLng));
-      localStorage.setItem("destinationInput", props.destinationInputValue);
-      if (isSourceValid && isDestinationValid) {
-        props.modal?.current?.setCurrentBreakpoint(0);
-        props.renderDirection();
-      }
+      localStorage.setItem("destinationInput", place.name);
       if (!props.sourceInputValue || props.sourceInputValue === null) {
         sourceInput.current?.setFocus();
         return;
@@ -104,8 +92,8 @@ const Destination = (props: any) => {
     setIsSourceValid(false);
     props.setIsSourceValid(false);
     clearTimeout(debounceTimer);
+    props.setSourceInputValue(event.target.value);
     debounceTimer = setTimeout(() => {
-      props.setSourceInputValue(event.target.value);
       handleInputChange(event);
     }, 1000);
   };
@@ -113,8 +101,8 @@ const Destination = (props: any) => {
   const handleDestinationChange = (event: any) => {
     setIsDestinationValid(false);
     clearTimeout(debounceTimer);
+    props.setDestinationInputValue(event.target.value);
     debounceTimer = setTimeout(() => {
-      props.setDestinationInputValue(event.target.value);
       handleInputChange(event);
     }, 1000);
   };
@@ -145,17 +133,6 @@ const Destination = (props: any) => {
     }
   };
 
-  const handleBreakpointChange = async () => {
-    // if (props.modal?.current.getCurrentBreakpoint()) {
-    let breakPoint = await props.modal?.current.getCurrentBreakpoint();
-    if (breakPoint == 0.5) {
-      // setIsSourceFocused(true);
-    } else {
-      setReadonlySource(false);
-    }
-    // }
-  };
-
   const handleSourceClick = () => {
     props.modal?.current?.setCurrentBreakpoint(1);
     setIsSourceFocused(true);
@@ -184,7 +161,6 @@ const Destination = (props: any) => {
 
   return (
     <>
-      {/* <IonPage> */}
       <IonModal
         id="destinationModal"
         ref={props.modal}
@@ -193,22 +169,11 @@ const Destination = (props: any) => {
         canDismiss={true}
         backdropBreakpoint={0.4}
         breakpoints={[0, 0.4, 0.8, 1]}
-        onIonBreakpointDidChange={handleBreakpointChange}
       >
         <IonContent>
           <IonTitle style={{ textAlign: "center", marginTop: "20px" }}>
             {selectedInput}
           </IonTitle>
-          {/* <IonButton
-            slot="end"
-            className={`confirmButton ${
-              confirmDisabled ? "confirmDisabled" : ""
-            }`}
-            disabled={confirmDisabled}
-            onClick={handleConfirmClick}
-          >
-            Confirm
-          </IonButton> */}
           <div className="placeInputForm">
             <div className="sourceBlock">
               <IonText className="blockLabel">From</IonText>
@@ -230,7 +195,6 @@ const Destination = (props: any) => {
                   onFocus={handleSourceFocus}
                   placeholder="Enter Source Location"
                   ref={sourceInput}
-                  readonly={readonlySource}
                   className="placeInput"
                   onIonInput={handleSourceChange}
                   onClick={handleSourceClick}
@@ -313,7 +277,8 @@ const Destination = (props: any) => {
           <div className="actionButtonsHolder">
             <IonButton onClick={handleOnCancelClick}>Cancel</IonButton>
             <IonButton
-              onClick={handleConfirmClick}
+              onClick={handleNextClick}
+              disabled={confirmDisabled}
               className={`confirmButton ${
                 confirmDisabled ? "confirmDisabled" : ""
               }`}
@@ -327,33 +292,31 @@ const Destination = (props: any) => {
             {places &&
               places.length > 0 &&
               places.map((place, index) => (
-                <>
-                  <div
-                    key={index}
-                    className="ion-activatable ripple-parent placeItem"
-                    onClick={() => handleOnPlaceClick(place)}
-                  >
-                    <div className="locationLeftHolder">
-                      <IonRippleEffect></IonRippleEffect>
-                      <div className="locationIconCircle">
-                        <IonIcon
-                          className="locationIcon"
-                          icon={locationOutline}
-                        ></IonIcon>
-                      </div>
-                      <IonText className="distanceText">
-                        {place.distance.toFixed(2)} km
-                      </IonText>
+                <div
+                  key={index}
+                  className="ion-activatable ripple-parent placeItem"
+                  onClick={() => handleOnPlaceClick(place)}
+                >
+                  <div className="locationLeftHolder">
+                    <IonRippleEffect></IonRippleEffect>
+                    <div className="locationIconCircle">
+                      <IonIcon
+                        className="locationIcon"
+                        icon={locationOutline}
+                      ></IonIcon>
                     </div>
-                    <div>
-                      <IonText className="placeName">{place.name}</IonText>
-                      <br />
-                      <IonText className="placeFormattedAddress">
-                        {place.formatted_address}
-                      </IonText>
-                    </div>
+                    <IonText className="distanceText">
+                      {place.distance.toFixed(2)} km
+                    </IonText>
                   </div>
-                </>
+                  <div>
+                    <IonText className="placeName">{place.name}</IonText>
+                    <br />
+                    <IonText className="placeFormattedAddress">
+                      {place.formatted_address}
+                    </IonText>
+                  </div>
+                </div>
               ))}
           </div>
         </IonContent>

@@ -10,17 +10,15 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import {
-  GoogleMap,
-  useJsApiLoader,
-  OverlayView,
-  Marker,
-  LoadScript,
-  Polygon,
-} from "@react-google-maps/api";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { Loader, LoaderOptions } from "google-maps";
-import "./FindRide.css";
+import {
+  ConfirmDetails,
+  SelectCoRiders,
+  SelectSchedule,
+  SelectVehicle,
+} from "../../components/CreateRideForm";
+import "./CreateRide.css";
 import {
   APIProvider,
   AdvancedMarker,
@@ -37,20 +35,30 @@ const mapOptions = {
   gestureHandling: "greedy",
 };
 
-function FindRide(props: any) {
+function CreateRide(props: any) {
   const mapId = import.meta.env.VITE_APP_GOOGLE_MAPS_MAP_ID;
   const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [polylineCords, setPolylineCords] = useState<any>();
   const [sourceLatLng, setSourceLatLng] = useState<any>();
+  const [vehicles, setVechicles] = useState<any>([]);
   const [destinationLatLng, setDestinationLatLng] = useState<any>(
     localStorage.getItem("destinationLatLng")
   );
+  const [visibleForm, setVisibleForm] = useState<number>(1);
+  const [mapHeight, setMapHeight] = useState<number>(60);
   const [distance, setDistance] = useState<string>();
   const [destinationInput, setDestinationInput] = useState<any>(
     localStorage.getItem("destinationInput")
   );
+
+  const formTabs: any = {
+    1: "selectVehicle",
+    2: "selectCoriders",
+    3: "selectSchedule",
+    4: "confirmDetails",
+  };
   const [balance, setBalance] = useState<number>();
   const [center, setCenter] = useState<any>({
     lat: 19.0989,
@@ -60,7 +68,8 @@ function FindRide(props: any) {
   const [joinMapRef, setJoinMapRef] = useState<google.maps.Map>();
   const mapLibraries: any = ["places"];
   var bounds = new google.maps.LatLngBounds();
-  function Directions() {
+
+  const Directions = memo(() => {
     const map = useMap();
     const routesLibrary = useMapsLibrary("routes");
     const [directionsService, setDirectionsService] =
@@ -100,7 +109,6 @@ function FindRide(props: any) {
           // provideRouteAlternatives: true,
         })
         .then((response: any) => {
-          console.log("renderer response", response);
           setDistance(response?.routes[0]?.legs[0]?.distance?.text);
           directionsRenderer.setDirections(response);
           setRoutes(response.routes);
@@ -113,10 +121,20 @@ function FindRide(props: any) {
     useEffect(() => {
       if (!directionsRenderer) return;
       directionsRenderer.setRouteIndex(routeIndex);
-    }, [routeIndex, directionsRenderer]);
+    }, [routeIndex]);
+    // }, [routeIndex, directionsRenderer]);
 
     if (!leg) return null;
-  }
+  });
+
+  useEffect(() => {
+    let user: any = localStorage.getItem("user");
+    if (!user) return;
+    user = JSON.parse(user);
+    let vehicles = user?.Vehicles;
+    setVechicles(vehicles);
+    console.log();
+  }, []);
 
   useEffect(() => {
     let user = localStorage.getItem("user");
@@ -136,6 +154,35 @@ function FindRide(props: any) {
     setDestinationLatLng(dest);
   }, [joinMapRef]);
 
+  useEffect(() => {
+    if (formTabs[visibleForm.toString()] === "confirmDetails") {
+      setMapHeight(40);
+    } else if (formTabs[visibleForm.toString()] === "selectVehicle") {
+      setMapHeight(50);
+    } else if (formTabs[visibleForm.toString()] === "selectSchedule") {
+      setMapHeight(65);
+    } else {
+      setMapHeight(60);
+    }
+  }, [visibleForm]);
+  const handleBackClick = () => {
+    let container = document.getElementById("container");
+    if (visibleForm > 1) {
+      container?.classList.replace("visible", "invisible");
+      container?.classList.replace("invisible", "visible");
+      setVisibleForm(visibleForm - 1);
+    }
+  };
+
+  const handleNextClick = () => {
+    let container = document.getElementById("container");
+    if (visibleForm < 4) {
+      container?.classList.replace("visible", "invisible");
+      container?.classList.replace("invisible", "visible");
+      setVisibleForm(visibleForm + 1);
+    }
+  };
+
   return (
     <>
       <IonPage>
@@ -144,7 +191,7 @@ function FindRide(props: any) {
             <IonButtons slot="start">
               <IonBackButton></IonBackButton>
             </IonButtons>
-            <IonTitle style={{ textAlign: "center" }}>Find Ride</IonTitle>
+            <IonTitle style={{ textAlign: "center" }}>Create Ride</IonTitle>
             <IonButtons slot="end">
               <div
                 style={{
@@ -154,7 +201,7 @@ function FindRide(props: any) {
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        <IonContent>
+        <IonContent className="createRideContent">
           <APIProvider apiKey={apiKey}>
             <Map
               defaultCenter={center}
@@ -163,10 +210,14 @@ function FindRide(props: any) {
               keyboardShortcuts={false}
               clickableIcons={false}
               disableDefaultUI={true}
-              style={{ height: "60%", width: "100%" }}
+              style={{
+                height: mapHeight + "%",
+                width: "100%",
+                transition: "height 0.5s ease",
+                fontFamily: "Poppins",
+              }}
               styles={[{ stylers: [] }]}
             >
-              <Directions />
               <AdvancedMarker
                 className="advancedMarker"
                 position={sourceLatLng}
@@ -194,25 +245,35 @@ function FindRide(props: any) {
                   <div className="innerCircle"></div>
                 </div>
               </AdvancedMarker>
+              <Directions />
             </Map>
           </APIProvider>
           <div className="searchModal">
-            <div className="charges">
-              <IonText className="label">You Pay</IonText>
-              <IonText className="amount">₹ 20</IonText>
-            </div>
-            <div className="details">
-              <p>Total Distance: {distance}</p>
-            </div>
-            <div className="balance">
-              <IonText>Wallet Balance</IonText>
-              <IonText>
-                <span className="amount">₹ {balance}</span>
-              </IonText>
-            </div>
-            <div className="btnHolder">
-              <IonButton>Search Rides</IonButton>
-            </div>
+            {formTabs[visibleForm.toString()] === "selectVehicle" && (
+              <SelectVehicle
+                vehicles={vehicles}
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
+            )}
+            {formTabs[visibleForm.toString()] === "selectCoriders" && (
+              <SelectCoRiders
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
+            )}
+            {formTabs[visibleForm.toString()] === "selectSchedule" && (
+              <SelectSchedule
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
+            )}
+            {formTabs[visibleForm.toString()] === "confirmDetails" && (
+              <ConfirmDetails
+                onNextClick={handleNextClick}
+                onBackClick={handleBackClick}
+              />
+            )}
           </div>
         </IonContent>
       </IonPage>
@@ -221,4 +282,4 @@ function FindRide(props: any) {
   );
 }
 
-export default FindRide;
+export default CreateRide;

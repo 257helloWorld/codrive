@@ -7,6 +7,8 @@ import {
   IonRouterContext,
   IonAlert,
   IonButton,
+  IonImg,
+  IonRippleEffect,
 } from "@ionic/react";
 import "./Join.css";
 import {
@@ -22,6 +24,8 @@ import { useContext, useEffect, useRef, useState } from "react";
 import Destination from "../Destination";
 
 import pin from "/assets/images/pin.svg";
+import startRide from "/assets/images/drive.png";
+import scheduleRide from "/assets/images/calendar.png";
 
 import getDirections from "../../functions/getDirections";
 import getUser from "../../functions/getUser";
@@ -45,11 +49,6 @@ const polylineOptions = {
   strokeWeight: 4,
 };
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "calc(80% - 70px)",
-};
-
 const Join = (props: any) => {
   const [centerLatLng, setCenterLatLng] = useState<LatLng>();
   const [polylineCords, setPolylineCords] = useState<any>();
@@ -60,6 +59,7 @@ const Join = (props: any) => {
   const [isFirstCall, setIsFirstCall] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isSecondCall, setIsSecondCall] = useState<boolean>(false);
+  const [height, setHeight] = useState<number>(80);
   const [sourceInputValue, setSourceInputValue] = useState<string>(
     "Your current location"
   );
@@ -82,6 +82,20 @@ const Join = (props: any) => {
     googleMapsApiKey: apiKey,
     libraries: mapLibraries,
   });
+
+  const mapContainerStyle = {
+    width: "100%",
+    height: "calc(" + height + "% - 70px)",
+    transition: "height 0.5s ease",
+  };
+
+  useEffect(() => {
+    if (props.selectedTab === "tab1") {
+      setHeight(80);
+    } else {
+      setHeight(75);
+    }
+  }, [props.selectedTab]);
 
   const renderDirection = () => {
     let directions: any;
@@ -106,6 +120,7 @@ const Join = (props: any) => {
       let user = await getUser();
     };
     getUserDetails();
+    getCenterPlace();
   }, []);
 
   useEffect(() => {
@@ -177,16 +192,19 @@ const Join = (props: any) => {
     geocoder.geocode({ location: center }, (results, status) => {
       if (status === "OK") {
         if (!results) {
-          return;
+          return "";
         }
         if (results[0]) {
           setSourceInputValue(results[0].formatted_address);
           setIsSourceValid(true);
+          localStorage.setItem("sourceInput", results[0].formatted_address);
         } else {
           console.log("No results found");
+          return "";
         }
       } else {
         console.error("Geocoder failed due to: " + status);
+        return "";
       }
     });
   };
@@ -194,55 +212,80 @@ const Join = (props: any) => {
   return (
     <>
       <IonContent>
-        {!isLoaded ? (
-          <p style={{ textAlign: "center" }}>Loading...</p>
-        ) : (
-          <GoogleMap
-            id="map"
-            center={centerLatLng}
-            onLoad={handleOnLoad}
-            zoom={15}
-            mapContainerStyle={mapContainerStyle}
-            onClick={(e) => handleClick(e)}
-            onCenterChanged={handleMapCenterChanged}
-            options={mapOptions}
-          >
-            <div className="locationPin">
-              <div>
-                <IonText>Source</IonText>
+        <div style={mapContainerStyle}>
+          {!isLoaded ? (
+            <p style={{ textAlign: "center" }}>Loading...</p>
+          ) : (
+            <GoogleMap
+              id="map"
+              center={centerLatLng}
+              onLoad={handleOnLoad}
+              zoom={15}
+              mapContainerStyle={{ height: "100%" }}
+              onClick={(e) => handleClick(e)}
+              onCenterChanged={handleMapCenterChanged}
+              options={mapOptions}
+            >
+              <div className="locationPin">
+                <div>
+                  <IonText>Source</IonText>
+                </div>
+                <IonIcon icon={pin}></IonIcon>
               </div>
-              <IonIcon icon={pin}></IonIcon>
-            </div>
 
-            {polylineCords && (
-              <Polyline path={polylineCords} options={polylineOptions} />
-            )}
-          </GoogleMap>
-        )}
-        {/* DestinationInput */}
-        <div
-          style={{
-            height: "70px",
-            display: "flex",
-          }}
-        >
-          <IonItem lines="none" id="destinationInputHolder">
-            <IonIcon
-              slot="start"
-              icon={locationSharp}
-              style={{ marginRight: "10px", marginLeft: "10px" }}
-              color="black"
-            ></IonIcon>
-            <IonInput
-              // id="destinationInput"
-              readonly={true}
-              value={""}
-              placeholder="Enter Destination"
-              // onClick={props.hdc}
-              onClick={handleDestinationClick}
-            ></IonInput>
-          </IonItem>
+              {polylineCords && (
+                <Polyline path={polylineCords} options={polylineOptions} />
+              )}
+            </GoogleMap>
+          )}
         </div>
+        {/* DestinationInput */}
+        {props.selectedTab === "tab1" ? (
+          <div
+            style={{
+              height: "70px",
+              display: "flex",
+            }}
+          >
+            <IonItem lines="none" id="destinationInputHolder">
+              <IonIcon
+                slot="start"
+                icon={locationSharp}
+                style={{ marginRight: "10px", marginLeft: "10px" }}
+                color="black"
+              ></IonIcon>
+              <IonInput
+                readonly={true}
+                value={""}
+                placeholder="Enter Destination"
+                // onClick={props.hdc}
+                onClick={handleDestinationClick}
+              ></IonInput>
+            </IonItem>
+          </div>
+        ) : (
+          <div className="driveTabContainer">
+            <IonText className="title">Select action</IonText>
+            <div className="driveTab">
+              <div
+                className="createRideCard ion-activatable ripple-parent"
+                onClick={handleDestinationClick}
+              >
+                <IonRippleEffect></IonRippleEffect>
+                <IonImg src={startRide}></IonImg>
+                <IonText>Drive Now</IonText>
+              </div>
+              <div
+                className="scheduleRideCard ion-activatable ripple-parent"
+                onClick={handleDestinationClick}
+              >
+                <IonRippleEffect></IonRippleEffect>
+                <IonImg src={scheduleRide}></IonImg>
+                <IonText>Schedule Ride</IonText>
+              </div>
+            </div>
+          </div>
+        )}
 
         <Destination
           setCurrentLocationAsSource={setCurrentLocationAsSource}
@@ -261,6 +304,7 @@ const Join = (props: any) => {
           setIsConfirmOpen={setIsConfirmOpen}
           isSourceValid={isSourceValid}
           setIsSourceValid={setIsSourceValid}
+          selectedTab={props.selectedTab}
         />
       </IonContent>
 

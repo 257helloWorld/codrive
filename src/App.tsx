@@ -49,6 +49,7 @@ import EditProfile from "./pages/Profile/EditProfile";
 import Destination from "./pages/Destination";
 import JoinMap from "./pages/FindRide";
 import FindRide from "./pages/FindRide";
+import CreateRide from "./pages/Home/CreateRide";
 
 setupIonicReact();
 
@@ -63,6 +64,7 @@ const App: React.FC = () => {
           <Route path="/rideinfo" component={RideInfo} />
           <Route path="/editprofile" component={EditProfile} />
           <Route path="/destination" component={Destination} />
+          <Route path="/createride" component={CreateRide} />
           <Route path="/findride" component={FindRide} />
 
           <Route exact path="/">

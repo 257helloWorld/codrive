@@ -107,3 +107,55 @@
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 998;
 }
+
+.gm-style iframe + div {
+  border: none !important;
+}
+
+.driveTabContainer {
+  overflow: hidden;
+  height: 35%;
+  padding: 20px 35px;
+  display: flex;
+  flex-direction: column;
+}
+
+.driveTabContainer .title {
+  text-align: center;
+  font-size: 20px;
+}
+
+.driveTab {
+  margin-top: 20px;
+  height: 100%;
+  display: flex;
+  /* background-color: red; */
+  justify-content: space-between;
+}
+
+.driveTab div {
+  position: relative;
+  background-color: rgb(235, 235, 235);
+  height: 70%;
+  width: 45%;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 20px;
+}
+
+.driveTab div ion-ripple-effect {
+  border-radius: 20px;
+}
+
+.driveTab div ion-img {
+  height: 65%;
+  opacity: 0.7;
+}
+
+.driveTab div ion-text {
+  margin-top: 10px;
+  font-size: 17px;
+}

@@ -22,6 +22,7 @@ import {
   IonLabel,
   IonList,
   IonSearchbar,
+  IonIcon,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import React, {
@@ -33,8 +34,18 @@ import React, {
 } from "react";
 import { Route, Redirect } from "react-router";
 import Tab1 from "./Join";
+import "./Home.css";
 import Tab2 from "./Drive";
 import getUser from "../../functions/getUser";
+import {
+  exitOutline,
+  helpOutline,
+  reloadOutline,
+  settingsOutline,
+  triangleOutline,
+  walletOutline,
+  warningOutline,
+} from "ionicons/icons";
 
 function Home() {
   const [selectedTab, setSelectedTab] = useState<any>("tab1");
@@ -60,6 +71,7 @@ function Home() {
       localStorage.setItem("user", JSON.stringify(user));
     };
     fetchUser();
+    localStorage.removeItem("createRideDetails");
   }, []);
 
   const handleProfileClick = () => {
@@ -75,28 +87,62 @@ function Home() {
   };
 
   const handleJoinMapClick = () => {
-    ionRouterContext.push("/findride", "forward");
+    if (selectedTab === "tab1") {
+      ionRouterContext.push("/findride", "forward");
+    } else {
+      ionRouterContext.push("/createride", "forward");
+    }
   };
 
   return (
     <>
-      <IonMenu contentId="main-content">
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Menu Content</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonMenuToggle>
-          <IonButton className="home_menuButton" onClick={handleHistoryClick}>
-            History
-          </IonButton>
-          {/* <IonButton id="open-modal">Open Modal</IonButton> */}
+      <IonMenu contentId="main-content" className="menu">
+        <IonMenuToggle className="menuToggle">
+          <IonList lines="none">
+            <IonItem routerLink="/profile">
+              <div
+                className="profileIcon menuProfile"
+                style={{ marginRight: "10px" }}
+              >
+                <IonImg
+                  className="profileImage"
+                  src={user?.ProfileUrl}
+                ></IonImg>
+              </div>
+              <div>
+                <IonLabel>Shinosuke Nohara</IonLabel>
+                <IonLabel style={{ color: "#a1a1a1", marginTop: "3px" }}>
+                  View Profile
+                </IonLabel>
+              </div>
+            </IonItem>
+            <hr></hr>
+            <IonItem routerLink="/history">
+              <IonIcon slot="start" icon={reloadOutline}></IonIcon>
+              <IonLabel>History</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile">
+              <IonIcon slot="start" icon={walletOutline}></IonIcon>
+              <IonLabel>Wallet</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile">
+              <IonIcon slot="start" icon={settingsOutline}></IonIcon>
+              <IonLabel>Settings</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile">
+              <IonIcon slot="start" icon={helpOutline}></IonIcon>
+              <IonLabel>Support</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile">
+              <IonIcon slot="start" icon={warningOutline}></IonIcon>
+              <IonLabel>SOS</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile">
+              <IonIcon slot="start" icon={exitOutline}></IonIcon>
+              <IonLabel>Logout</IonLabel>
+            </IonItem>
+          </IonList>
         </IonMenuToggle>
-        {/* <IonMenuToggle>
-          <IonButton className="home_menuButton" onClick={handleRideInfoClick}>
-            RideInfo
-          </IonButton>
-        </IonMenuToggle> */}
         <IonContent className="ion-padding"></IonContent>
       </IonMenu>
 
@@ -123,98 +169,59 @@ function Home() {
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-        {loaded && (
-          <IonContent>
-            <IonReactRouter>
-              <IonTabs
-                onIonTabsDidChange={(e) => {
-                  setSelectedTab(e.detail.tab);
-                }}
-              >
-                <IonRouterOutlet>
-                  <Route exact path="/home/tab1">
-                    <Tab1
-                      hdc={handleDestinationClick}
-                      handleJoinMapClick={handleJoinMapClick}
-                    />
-                  </Route>
-                  <Route exact path="/home/tab2">
-                    <Tab2 />
-                  </Route>
-                  <Route exact path="/home">
-                    <Redirect to="/home/tab1" />
-                  </Route>
-                </IonRouterOutlet>
+        <IonContent>
+          <Tab1
+            hdc={handleDestinationClick}
+            handleJoinMapClick={handleJoinMapClick}
+            selectedTab={selectedTab}
+          />
+        </IonContent>
+        <div
+          className="tabBar"
+          slot="bottom"
+          style={{ height: "90px", backgroundColor: "#f1f1f1" }}
+        >
+          <IonButton
+            className={
+              selectedTab === "tab1" ? "tabButton selectedButton" : "tabButton"
+            }
+            // href="/home/tab1"
+            onClick={() => setSelectedTab("tab1")}
+            style={{ backgroundColor: "#f1f1f1" }}
+          >
+            <div className={selectedTab === "tab1" ? "div" : "div"}>
+              <IonImg
+                src={selectedTab === "tab1" ? carSportGreen : carSportBlack}
+                style={{ height: "25px", color: "red" }}
+              ></IonImg>
 
-                <IonTabBar
-                  slot="bottom"
-                  style={{ height: "80px", backgroundColor: "#f1f1f1" }}
-                >
-                  <IonTabButton
-                    className="tabButtons"
-                    tab="tab1"
-                    href="/home/tab1"
-                    style={{ backgroundColor: "#f1f1f1" }}
-                  >
-                    <div
-                      className={
-                        selectedTab === "tab1" ? "div selectedDiv" : "div"
-                      }
-                    >
-                      <IonImg
-                        src={
-                          selectedTab === "tab1" ? carSportGreen : carSportBlack
-                        }
-                        style={{ height: "25px", color: "red" }}
-                      ></IonImg>
+              <IonText>Join</IonText>
+            </div>
+          </IonButton>
 
-                      <IonText
-                        style={{
-                          marginLeft: "15px",
-                          fontSize: "15px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Join
-                      </IonText>
-                    </div>
-                  </IonTabButton>
-
-                  <IonTabButton
-                    className="tabButtons"
-                    tab="tab2"
-                    href="/home/tab2"
-                    style={{ backgroundColor: "#f1f1f1" }}
-                  >
-                    <div
-                      className={
-                        selectedTab === "tab2" ? "div selectedDiv" : "div"
-                      }
-                    >
-                      <IonImg
-                        src={
-                          selectedTab === "tab2"
-                            ? steeringWheelGreen
-                            : steeringWheelBlack
-                        }
-                        style={{ height: "25px", color: "red" }}
-                      ></IonImg>
-                      <IonText
-                        style={{
-                          marginLeft: "15px",
-                          fontSize: "15px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Drive
-                      </IonText>
-                    </div>
-                  </IonTabButton>
-                </IonTabBar>
-              </IonTabs>
-            </IonReactRouter>
-          </IonContent>
-        )}
+          <IonButton
+            className={
+              selectedTab === "tab2" ? "tabButton selectedButton" : "tabButton"
+            }
+            onClick={() => {
+              setSelectedTab("tab2");
+            }}
+            // href="/home/tab2"
+            style={{ "--background": "#f1f1f1" }}
+          >
+            <div className="div">
+              <IonImg
+                src={
+                  selectedTab === "tab2"
+                    ? steeringWheelGreen
+                    : steeringWheelBlack
+                }
+                style={{ height: "25px", color: "red" }}
+              ></IonImg>
+              <IonText>Drive</IonText>
+            </div>
+          </IonButton>
+        </div>
       </IonPage>
     </>
   );
