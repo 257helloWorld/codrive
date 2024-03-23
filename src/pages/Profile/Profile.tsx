@@ -6,6 +6,7 @@ import {
   IonContent,
   IonFooter,
   IonHeader,
+  IonIcon,
   IonImg,
   IonPage,
   IonRouterContext,
@@ -16,13 +17,12 @@ import {
 } from "@ionic/react";
 import "./Profile.css";
 import { useContext, useEffect, useState } from "react";
+import { carSport, carSportOutline, carSportSharp } from "ionicons/icons";
 const Profile: React.FC = () => {
   const [user, setUser] = useState<any>();
   const verifiedBadgeImg = "/assets/images/VerifiedBadge.svg";
   const personImg = "/assets/images/person.svg";
   const carImg = "/assets/images/car.svg";
-  const userImg =
-    "https://sugermint.com/wp-content/uploads/2020/04/Biography-of-Sundar-Pichai.jpg";
   const ionRouterContext = useContext(IonRouterContext);
   const handleEditProfileClick = () => {
     ionRouterContext.push("/editprofile", "forward");
@@ -74,38 +74,75 @@ const Profile: React.FC = () => {
           {/* Bio & Ratings Card */}
           <div className="profile_bioRatingsHolder">
             {/* RatingsCard */}
-            <div className="profile_card profile_ratingsCard">
+            {/* <div className="profile_card profile_ratingsCard">
               <IonText className="profile_cardTitle">Ratings</IonText>
               <br />
               <p className="profile_ratings">
                 <span>{user?.Ratings}</span> / 5
               </p>
-            </div>
+            </div> */}
             {/* BioCard */}
             <div className="profile_card profile_bioCard">
               <IonText className="profile_cardTitle">Bio</IonText>
               <br />
-              <IonText>{user?.Bio}</IonText>
+              {!user?.hasOwnProperty("Bio") || user?.Bio == "" ? (
+                <IonText style={{ color: "gray" }}>
+                  You can set your bio in Edit Profile page.
+                </IonText>
+              ) : (
+                <IonText>{user?.Bio}</IonText>
+              )}
             </div>
           </div>
 
           {/* Vehicles */}
           <div className="profile_card profile_vehiclesCard">
-            <div className="profile_cardHeader">
+            <div
+              className="profile_cardHeader"
+              style={{ marginBottom: "10px" }}
+            >
               <IonText className="profile_cardTitle">My Vehicles</IonText>
               <IonButton className="profile_manageBtn">Manage</IonButton>
             </div>
-            <div className="profile_vehicleHolder">
-              <div>
-                <IonImg src={carImg} className="profile_carIcon"></IonImg>
-                <IonText>{user?.Vehicles[0].VehicleName}</IonText>
+            {!user?.hasOwnProperty("Vehicles") ||
+            user?.Vehicles?.length != 0 ? (
+              <div className="profile_vehicleHolder">
+                <div>
+                  <div
+                    style={{
+                      backgroundColor: "#fbfbfb",
+                      borderRadius: "50%",
+                      height: "50px",
+                      width: "50px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <IonIcon
+                      icon={carSportOutline}
+                      style={{
+                        width: "25px",
+                        height: "25px",
+                      }}
+                      // className="profile_carIcon"
+                    ></IonIcon>
+                  </div>
+                  <IonText>{user?.Vehicles[0]?.VehicleName}</IonText>
+                  {/* <IonText>Hello</IonText> */}
+                </div>
                 {/* <IonBadge>Primary</IonBadge> */}
+                <div className="profile_seatingCapacityHolder">
+                  <IonImg src={personImg}></IonImg>
+                  <p>{user?.Vehicles[0]?.SeatingCapacity}</p>
+                </div>
               </div>
-              <div className="profile_seatingCapacityHolder">
-                <IonImg src={personImg}></IonImg>
-                <p>{user?.Vehicles[0].SeatingCapacity}</p>
-              </div>
-            </div>
+            ) : (
+              <IonText style={{ color: "gray" }}>
+                No Vehicles. <br />
+                Click on "Manage" to add.
+              </IonText>
+            )}
           </div>
 
           {/* Reviews */}
@@ -116,21 +153,29 @@ const Profile: React.FC = () => {
                 View All
               </IonButton>
             </div>
-            {user?.Reviews.map((review: any) => (
-              <div className="profile_reviewHolder">
-                <div className="profile_reviewerIcon">
-                  <IonImg src={review.Reviewer.ProfileUrl}></IonImg>
-                </div>
-                <div className="profile_reviewContentHolder">
-                  <IonText className="profile_reviewerName">
-                    {review.Reviewer.Name}
-                  </IonText>
-                  <IonText className="profile_review">
-                    {review.Feedback} <span>({review.Ratings}/5)</span>
-                  </IonText>
-                </div>
-              </div>
-            ))}
+            {user?.hasOwnProperty("Reviews") && user?.Reviews?.length !== 0 ? (
+              user?.Reviews.map((review: any) => (
+                <>
+                  <div className="profile_reviewHolder">
+                    <div className="profile_reviewerIcon">
+                      <IonImg src={review.Reviewer.ProfileUrl}></IonImg>
+                    </div>
+                    <div className="profile_reviewContentHolder">
+                      <IonText className="profile_reviewerName">
+                        {review.Reviewer.Name}
+                      </IonText>
+                      <IonText className="profile_review">
+                        {review.Feedback} <span>({review.Ratings}/5)</span>
+                      </IonText>
+                    </div>
+                  </div>
+                </>
+              ))
+            ) : (
+              <IonText style={{ color: "gray" }}>
+                No Reviews. <br />
+              </IonText>
+            )}
           </div>
         </div>
       </IonContent>

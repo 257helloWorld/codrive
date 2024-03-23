@@ -11,7 +11,7 @@ const isToday = (storedDate: string) => {
   return storedDate === today;
 };
 
-const getUser = async () => {
+const getUser = async (userId: string) => {
   let user;
   try {
     const cachedUserData = localStorage.getItem("savedUser");
@@ -24,7 +24,8 @@ const getUser = async () => {
 
     let data = await axios.get("https://codrive.pythonanywhere.com/get_user", {
       params: {
-        userId: "zoRqVAbw0ZI13ndOs0ni",
+        // userId: "qfwnh0T4TkYnzJIbGOfV",
+        userId: userId,
       },
     });
 

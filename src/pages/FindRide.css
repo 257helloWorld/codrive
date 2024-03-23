@@ -1,35 +1,43 @@
-.searchModal {
+.findRideContent::part(scroll) {
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.findSearchModal {
   display: flex;
   padding: 20px 40px;
   flex-direction: column;
   height: 40%;
+  overflow-y: scroll;
 }
 
-.btnHolder {
-  margin: auto;
+.findBtnHolder {
+  margin-top: auto;
   width: 100%;
+  margin-bottom: 10px;
 }
 
-.searchModal .balance {
+.findSearchModal .balance {
   display: flex;
   height: 50px;
   border-radius: 30px;
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
+  margin-top: auto;
   background-color: rgb(235, 235, 235);
 }
 
-.searchModal .charges {
+.findSearchModal .charges {
   display: flex;
   justify-content: space-between;
 }
 
-.searchModal .charges .label {
+.findSearchModal .charges .label {
   font-size: 20px;
 }
 
-.searchModal .charges .amount {
+.findSearchModal .charges .amount {
   font-weight: bold;
   font-size: 25px;
   color: green;
@@ -40,7 +48,7 @@
   margin-right: 5px;
 }
 
-.searchModal .btnHolder ion-button {
+.findSearchModal .findBtnHolder ion-button {
   --background: green;
   --border-radius: 30px;
   height: 50px;
@@ -101,4 +109,119 @@
   border-radius: 50%;
   background-color: #fff;
   margin: auto;
+}
+
+.searchRidesModalContent::part(scroll) {
+  display: flex;
+  flex-direction: column;
+}
+
+.searchRidesModalTitle {
+  text-align: center;
+  margin: 20px auto;
+  font-size: 20px;
+}
+
+.rideCard {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(243, 243, 243);
+  width: 90%;
+  padding: 15px 25px;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.rideCard .vehicleDetails {
+  display: flex;
+  align-items: center;
+}
+
+.vehicleIcon ion-icon {
+  height: 25px;
+  width: 25px;
+}
+
+.vehicleDetails .vehicleName {
+  margin-left: 15px;
+  flex: 1;
+}
+
+.vehicleDetails .vehicleName ion-text:nth-child(1) {
+  font-size: 18px;
+}
+.vehicleDetails .vehicleName ion-text:nth-child(3) {
+  color: rgb(140, 140, 140);
+  font-size: 15px;
+}
+
+.vehicleDetails .vehicleCapacity {
+  border-radius: 30px;
+  background-color: rgb(219, 219, 219);
+  padding: 5px 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+}
+
+.vehicleCapacity ion-text {
+  margin-left: 10px;
+  font-size: 15px;
+}
+
+.userDetails {
+  display: flex;
+  align-items: center;
+}
+
+.userDetails .userProfileHolder {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  object-fit: cover;
+  display: flex;
+}
+
+.userDetails .userName {
+  margin-left: 10px;
+  margin-right: 10px;
+  flex: 1;
+  overflow-x: scroll;
+}
+
+.userDetails .userName ion-text:nth-child(1) {
+  font-size: 18px;
+}
+
+.userDetails .userName ion-text:nth-child(3) {
+  color: rgb(140, 140, 140);
+}
+
+.rideCardFooter {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.rideCardFooterButtonHolder {
+  margin-left: auto;
+}
+
+.rideCardFooterButtonHolder ion-button {
+  --border-radius: 20px;
+  --background: black;
+  --box-shadow: none;
+  height: 45px;
+  max-width: 90px;
+}
+
+.dashedLine {
+  margin: 0 auto;
+  margin-top: 15px;
+  width: 90%;
+  border: 1px dashed rgb(158, 158, 158);
+  opacity: 50%;
 }

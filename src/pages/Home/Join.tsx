@@ -56,14 +56,16 @@ const Join = (props: any) => {
   const [mapLibraries, setMapLibraries] = useState<any>(["places"]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState<boolean>(false);
+  const [msg, setMsg] = useState<string>("");
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const [isFirstCall, setIsFirstCall] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isSecondCall, setIsSecondCall] = useState<boolean>(false);
   const [height, setHeight] = useState<number>(80);
-  const [sourceInputValue, setSourceInputValue] = useState<string>(
-    "Your current location"
-  );
-  const [destinationInputValue, setDestinationInputValue] = useState<string>();
+
+  const sourceInputValue = useRef<any>();
+  const destinationInputValue = useRef<any>();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSourceValid, setIsSourceValid] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>();
@@ -180,9 +182,10 @@ const Join = (props: any) => {
   const setCurrentLocationAsSource = async () => {
     let currentLocation: any = await getCurrentLocation();
     console.log("curr loc", currentLocation);
-    setOrigin(origin);
-    localStorage.setItem("sourceLatLng", JSON.stringify(origin));
+    setOrigin(currentLocation);
+    localStorage.setItem("sourceLatLng", JSON.stringify(currentLocation));
     setCenterLatLng(currentLocation);
+
     setIsSourceValid(true);
   };
 
@@ -195,8 +198,14 @@ const Join = (props: any) => {
           return "";
         }
         if (results[0]) {
-          setSourceInputValue(results[0].formatted_address);
+          console.log("center changed", sourceInputValue.current);
+          // if (!sourceInputValue.current) return;
+          let sourceTxt = document.getElementById(
+            "sourceInputTxt"
+          ) as HTMLInputElement;
+          sourceTxt.value = results[0].formatted_address;
           setIsSourceValid(true);
+          console.log(results[0]);
           localStorage.setItem("sourceInput", results[0].formatted_address);
         } else {
           console.log("No results found");
@@ -208,6 +217,18 @@ const Join = (props: any) => {
       }
     });
   };
+
+  useEffect(() => {
+    console.log("home rendered");
+    let msg = localStorage.getItem("msg");
+    if (!msg) {
+      setMsg("not set");
+      setIsAlertOpen(true);
+      return;
+    }
+    setMsg(msg);
+    setIsAlertOpen(true);
+  }, []);
 
   return (
     <>
@@ -290,9 +311,9 @@ const Join = (props: any) => {
         <Destination
           setCurrentLocationAsSource={setCurrentLocationAsSource}
           sourceInputValue={sourceInputValue}
-          setSourceInputValue={setSourceInputValue}
+          // setSourceInputValue={setSourceInputValue}
           destinationInputValue={destinationInputValue}
-          setDestinationInputValue={setDestinationInputValue}
+          // setDestinationInputValue={setDestinationInputValue}
           origin={origin}
           setOrigin={setOrigin}
           destination={destination}
@@ -309,12 +330,22 @@ const Join = (props: any) => {
       </IonContent>
 
       <IonAlert
-        isOpen={isOpen}
+        isOpen={true}
         header={"Alert"}
         onDidDismiss={() => {
           setIsOpen(false);
         }}
-        message={alertMessage}
+        message={msg}
+        buttons={["OK"]}
+      />
+
+      <IonAlert
+        isOpen={isAlertOpen}
+        header={"Alert"}
+        onDidDismiss={() => {
+          setIsAlertOpen(false);
+        }}
+        message={msg}
         buttons={["OK"]}
       />
     </>

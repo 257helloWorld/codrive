@@ -1,26 +1,29 @@
-// Import the functions you need from the SDKs you need
-
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import firebase from "firebase/compat/app";
+import "firebase/compat/firestore";
+import { getAuth } from "firebase/auth";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBpDpJnqbNxG-rAMEORbLHToYfQNDJC4iM",
-  authDomain: "rapidlinks-d9164.firebaseapp.com",
-  projectId: "rapidlinks-d9164",
-  storgeBucket: "rapidlinks-d9164.appspot.com",
-  messagingSenderId: "956642133326",
-  appId: "1:956642133326:web:88a3a380606f44d81f4a1f",
-  measurementId: "G-CF4FDKC63F",
+  // apiKey: "AIzaSyD9X-f3IAx-JRgeobDBRtMKRUdTqvZnC0A",
+  // authDomain: "codrive-fec10.appspot.com",
+  // projectId: "codrive-fec10",
+  // messagingSenderId: "874102047441",
+  // appId: "1:874102047441:android:1494b77a8ccab9b3f83bf0",
+  // measurementId: "G-CF4FDKC63F",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_BUCKET_URL,
 };
 
 // Initialize Firebase
 
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-export default getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+console.log("firebase initialized");
+
+const auth = getAuth();
+
+export const firestore = firebase.firestore();
+export default firebase;
+export const storage = getStorage();

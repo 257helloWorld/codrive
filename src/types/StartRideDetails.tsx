@@ -10,6 +10,7 @@ interface StartRideDetails {
   destinationInput: string;
   isNow: boolean;
   startTime: any;
+  seatingCapacity: number;
 }
 
 export default StartRideDetails;

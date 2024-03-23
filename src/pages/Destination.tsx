@@ -28,14 +28,17 @@ const Destination = (props: any) => {
   const [isSourceValid, setIsSourceValid] = useState<boolean>();
   const [isDestinationValid, setIsDestinationValid] = useState<boolean>(false);
 
-  const sourceInput = useRef<HTMLIonInputElement>(null);
-  const destinationInput = useRef<HTMLIonInputElement>(null);
+  const sourceInput = useRef<HTMLInputElement>(null);
+  const destinationInput = useRef<HTMLInputElement>(null);
+  const placesListRef = useRef<HTMLDivElement>(null);
+  const modalTitleRef = useRef<HTMLIonTitleElement>(null);
+  const destinationModalContentRef = useRef<HTMLIonContentElement>(null);
 
   let debounceTimer: any;
 
   const handleSourceFocus = () => {
-    if (props.sourceInputValue == "Your current location") {
-      props.setSourceInputValue("");
+    if (props.sourceInputValue.current == "Your current location") {
+      props.sourceInputValue.current = "";
     }
     setIsSourceFocused(true);
     setIsDestinationFocused(false);
@@ -55,44 +58,64 @@ const Destination = (props: any) => {
   ) => {
     let places = await getPlaces(query, src_lat, src_lng);
     setPlaces(places.places);
+    // if (destinationInput.current) {
+    //   destinationInput.current.scrollIntoView({ behavior: "smooth" });
+    // }
+    destinationModalContentRef?.current?.scrollToPoint(0, 220, 500);
   };
 
   const handleNextClick = () => {
     props.modal.current?.setCurrentBreakpoint(0);
     props.renderDirection();
+    setIsDestinationValid(false);
+    setIsSourceValid(false);
   };
 
   const handleOnPlaceClick = (place: any) => {
+    props?.modal?.current.setCurrentBreakpoint(0.8);
     setPlaces([]);
     let placeLatLng = {
       lat: place.geometry.location.lat,
       lng: place.geometry.location.lng,
     };
     if (isSourceFocused) {
-      props.setSourceInputValue(place.name);
+      // props.sourceInputValue.current = place.name;
+      if (sourceInput?.current) {
+        sourceInput.current.value = place.name;
+      }
       props.setOrigin(placeLatLng);
       localStorage.setItem("sourceLatLng", JSON.stringify(placeLatLng));
       localStorage.setItem("sourceInput", place.name);
       setIsSourceValid(true);
     } else if (isDestinationFocused) {
       let formattedAddress = place.name + ", " + place.formatted_address;
-      props.setDestinationInputValue(formattedAddress);
+      props.destinationInputValue.current = formattedAddress;
+      if (destinationInput?.current) {
+        destinationInput.current.value = formattedAddress;
+      }
       props.setDestination(placeLatLng);
       setIsDestinationValid(true);
       localStorage.setItem("destinationLatLng", JSON.stringify(placeLatLng));
       localStorage.setItem("destinationInput", place.name);
-      if (!props.sourceInputValue || props.sourceInputValue === null) {
-        sourceInput.current?.setFocus();
-        return;
-      }
+      // if (
+      //   !props.sourceInputValue.current ||
+      //   props.sourceInputValue.current === null
+      // ) {
+      //   sourceInput.current?.focus();
+      //   return;
+      // }
+    }
+    if (destinationModalContentRef.current) {
+      destinationModalContentRef.current.scrollToTop(300); // Scrolls to top with animation duration of 300ms
     }
   };
 
   const handleSourceChange = (event: any) => {
+    console.log("source changed");
     setIsSourceValid(false);
     props.setIsSourceValid(false);
     clearTimeout(debounceTimer);
-    props.setSourceInputValue(event.target.value);
+    props.sourceInputValue.current = event.target.value;
     debounceTimer = setTimeout(() => {
       handleInputChange(event);
     }, 1000);
@@ -101,7 +124,7 @@ const Destination = (props: any) => {
   const handleDestinationChange = (event: any) => {
     setIsDestinationValid(false);
     clearTimeout(debounceTimer);
-    props.setDestinationInputValue(event.target.value);
+    props.destinationInputValue.current = event.target.value;
     debounceTimer = setTimeout(() => {
       handleInputChange(event);
     }, 1000);
@@ -125,12 +148,16 @@ const Destination = (props: any) => {
   };
 
   const handleCurrentLocationClick = () => {
-    props.setSourceInputValue("Your current location");
+    // props.sourceInputValue.current = "Your current location";
+    if (sourceInput?.current) {
+      sourceInput.current.value = "Your current location";
+    }
     setIsSourceValid(true);
     props.setCurrentLocationAsSource();
-    if (props.destinationInputValue) {
+    if (props.destinationInputValue.current) {
       // confirmAddress();
     }
+    props.modal?.current?.setCurrentBreakpoint(0.8);
   };
 
   const handleSourceClick = () => {
@@ -159,9 +186,32 @@ const Destination = (props: any) => {
     }
   }, [isSourceValid, isDestinationValid, props.isSourceValid]);
 
+  useEffect(() => {
+    let sourceTxt = document.getElementById(
+      "sourceInputTxt"
+    ) as HTMLInputElement;
+    if (sourceTxt) {
+      sourceTxt.value = "Your current location";
+    }
+  }, []);
+
   return (
     <>
       <IonModal
+        onDidDismiss={() => {
+          setIsSourceValid(false);
+          setIsDestinationValid(false);
+        }}
+        onDidPresent={() => {
+          let sourceTxt = document.getElementById(
+            "sourceInputTxt"
+          ) as HTMLInputElement;
+          if (sourceTxt) {
+            sourceTxt.value = "Your current location";
+          }
+          props.setCurrentLocationAsSource();
+          props.setIsSourceValid(true);
+        }}
         id="destinationModal"
         ref={props.modal}
         isOpen={props.isModalOpen}
@@ -170,8 +220,12 @@ const Destination = (props: any) => {
         backdropBreakpoint={0.4}
         breakpoints={[0, 0.4, 0.8, 1]}
       >
-        <IonContent>
-          <IonTitle style={{ textAlign: "center", marginTop: "20px" }}>
+        <IonContent ref={destinationModalContentRef}>
+          <IonTitle
+            ref={modalTitleRef}
+            id="modalTitleTxt"
+            style={{ textAlign: "center", marginTop: "20px" }}
+          >
             {selectedInput}
           </IonTitle>
           <div className="placeInputForm">
@@ -191,21 +245,26 @@ const Destination = (props: any) => {
                   }`}
                 ></div>
 
-                <IonInput
+                <input
+                  id="sourceInputTxt"
+                  type="text"
                   onFocus={handleSourceFocus}
                   placeholder="Enter Source Location"
                   ref={sourceInput}
                   className="placeInput"
-                  onIonInput={handleSourceChange}
+                  onInput={handleSourceChange}
                   onClick={handleSourceClick}
-                  value={props.sourceInputValue}
-                ></IonInput>
+                  // value={props.sourceInputValue.current}
+                ></input>
                 <IonButtons>
                   <IonButton
                     onClick={() => {
                       setIsSourceValid(false);
                       props.setIsSourceValid(false);
-                      props.setSourceInputValue("");
+                      props.sourceInputValue.current = "";
+                      if (sourceInput.current) {
+                        sourceInput.current.value = "";
+                      }
                       setPlaces([]);
                     }}
                     style={{ marginLeft: "12px" }}
@@ -250,20 +309,24 @@ const Destination = (props: any) => {
                   icon={isDestinationFocused ? navigateGreen : navigateGray}
                   className="destinationNavigate"
                 ></IonIcon>
-                <IonInput
+                <input
+                  id="destinationInputTxt"
                   ref={destinationInput}
                   onFocus={handleDestinationFocus}
                   placeholder="Enter Destination"
-                  onIonInput={handleDestinationChange}
+                  onInput={handleDestinationChange}
                   className="placeInput"
                   onClick={handleDestinationClick}
-                  value={props.destinationInputValue}
-                ></IonInput>
+                  // value={props.destinationInputValue.current}
+                ></input>
                 <IonButtons>
                   <IonButton
                     onClick={() => {
                       setIsDestinationValid(false);
-                      props.setDestinationInputValue("");
+                      props.destinationInputValue.current = "";
+                      if (destinationInput.current) {
+                        destinationInput.current.value = "";
+                      }
                       setPlaces([]);
                     }}
                     style={{ marginLeft: "12px" }}
@@ -287,7 +350,7 @@ const Destination = (props: any) => {
             </IonButton>
           </div>
           <IonText className="suggestionsText">Suggestions</IonText>
-          <div className="placesList">
+          <div className="placesList" ref={placesListRef}>
             {/* {places && places.length <= 0 && <div>No results</div>} */}
             {places &&
               places.length > 0 &&
@@ -318,6 +381,11 @@ const Destination = (props: any) => {
                   </div>
                 </div>
               ))}
+            {places && places?.length < 10 && (
+              <>
+                <div className="space" style={{ height: "500px" }}></div>
+              </>
+            )}
           </div>
         </IonContent>
       </IonModal>

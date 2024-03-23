@@ -1,5 +1,4 @@
 .profileIcon {
-  background-color: red;
   height: 35px;
   width: 35px;
   border-radius: 50%;
@@ -31,9 +30,9 @@
 .tabButtons {
   --color-selected: #4a785e;
 }
-.home_menuButton{
+.home_menuButton {
   height: 50px;
   width: 99%;
-  --background:#f1f1f1;
-  color:#000;
+  --background: #f1f1f1;
+  color: #000;
 }

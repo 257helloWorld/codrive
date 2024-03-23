@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Loader, LoaderOptions } from "google-maps";
 import {
   ConfirmDetails,
@@ -35,6 +35,63 @@ const mapOptions = {
   gestureHandling: "greedy",
 };
 
+const Directions = (props: any) => {
+  const map = useMap();
+  const routesLibrary = useMapsLibrary("routes");
+  const [directionsService, setDirectionsService] =
+    useState<google.maps.DirectionsService>();
+  const [directionsRenderer, setDirectionsRenderer] =
+    useState<google.maps.DirectionsRenderer>();
+  const [routes, setRoutes] = useState<google.maps.DirectionsRoute[]>([]);
+  const [routeIndex, setRouteIndex] = useState(0);
+  const selected = routes[routeIndex];
+  const leg = selected?.legs[0];
+
+  const bounds = new google.maps.LatLngBounds();
+
+  // Initialize directions service and renderer
+  useEffect(() => {
+    if (!routesLibrary || !map) return;
+    setDirectionsService(new routesLibrary.DirectionsService());
+    setDirectionsRenderer(new routesLibrary.DirectionsRenderer({ map }));
+  }, [routesLibrary, map]);
+
+  // Use directions service
+  useEffect(() => {
+    if (!directionsService || !directionsRenderer) return;
+    directionsRenderer.setOptions({
+      polylineOptions: {
+        strokeColor: "#000",
+        strokeWeight: 4,
+        strokeOpacity: 0.9,
+      },
+      suppressMarkers: true,
+    });
+    directionsService
+      .route({
+        origin: props.sourceLatLng,
+        destination: props.destinationLatLng,
+        travelMode: google.maps.TravelMode.DRIVING,
+        // provideRouteAlternatives: true,
+      })
+      .then((response: any) => {
+        props.setDistance(response?.routes[0]?.legs[0]?.distance?.text);
+        directionsRenderer.setDirections(response);
+        setRoutes(response.routes);
+      });
+
+    return () => directionsRenderer.setMap(null);
+  }, [directionsService, directionsRenderer]);
+
+  // Update direction route
+  useEffect(() => {
+    if (!directionsRenderer) return;
+    directionsRenderer.setRouteIndex(routeIndex);
+  }, [routeIndex, directionsRenderer]);
+
+  if (!leg) return null;
+};
+
 function CreateRide(props: any) {
   const mapId = import.meta.env.VITE_APP_GOOGLE_MAPS_MAP_ID;
   const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
@@ -52,6 +109,7 @@ function CreateRide(props: any) {
   const [destinationInput, setDestinationInput] = useState<any>(
     localStorage.getItem("destinationInput")
   );
+  const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
 
   const formTabs: any = {
     1: "selectVehicle",
@@ -68,64 +126,6 @@ function CreateRide(props: any) {
   const [joinMapRef, setJoinMapRef] = useState<google.maps.Map>();
   const mapLibraries: any = ["places"];
   var bounds = new google.maps.LatLngBounds();
-
-  const Directions = memo(() => {
-    const map = useMap();
-    const routesLibrary = useMapsLibrary("routes");
-    const [directionsService, setDirectionsService] =
-      useState<google.maps.DirectionsService>();
-    const [directionsRenderer, setDirectionsRenderer] =
-      useState<google.maps.DirectionsRenderer>();
-    const [routes, setRoutes] = useState<google.maps.DirectionsRoute[]>([]);
-    const [routeIndex, setRouteIndex] = useState(0);
-    const selected = routes[routeIndex];
-    const leg = selected?.legs[0];
-
-    const bounds = new google.maps.LatLngBounds();
-
-    // Initialize directions service and renderer
-    useEffect(() => {
-      if (!routesLibrary || !map) return;
-      setDirectionsService(new routesLibrary.DirectionsService());
-      setDirectionsRenderer(new routesLibrary.DirectionsRenderer({ map }));
-    }, [routesLibrary, map]);
-
-    // Use directions service
-    useEffect(() => {
-      if (!directionsService || !directionsRenderer) return;
-      directionsRenderer.setOptions({
-        polylineOptions: {
-          strokeColor: "#000",
-          strokeWeight: 4,
-          strokeOpacity: 0.9,
-        },
-        suppressMarkers: true,
-      });
-      directionsService
-        .route({
-          origin: sourceLatLng,
-          destination: destinationLatLng,
-          travelMode: google.maps.TravelMode.DRIVING,
-          // provideRouteAlternatives: true,
-        })
-        .then((response: any) => {
-          setDistance(response?.routes[0]?.legs[0]?.distance?.text);
-          directionsRenderer.setDirections(response);
-          setRoutes(response.routes);
-        });
-
-      return () => directionsRenderer.setMap(null);
-    }, [directionsService, directionsRenderer]);
-
-    // Update direction route
-    useEffect(() => {
-      if (!directionsRenderer) return;
-      directionsRenderer.setRouteIndex(routeIndex);
-    }, [routeIndex]);
-    // }, [routeIndex, directionsRenderer]);
-
-    if (!leg) return null;
-  });
 
   useEffect(() => {
     let user: any = localStorage.getItem("user");
@@ -183,6 +183,10 @@ function CreateRide(props: any) {
     }
   };
 
+  useEffect(() => {
+    console.log(isConfirmLoading);
+  }, [isConfirmLoading]);
+
   return (
     <>
       <IonPage>
@@ -213,7 +217,7 @@ function CreateRide(props: any) {
               style={{
                 height: mapHeight + "%",
                 width: "100%",
-                transition: "height 0.5s ease",
+                transition: "height 0.3s ease-in-out",
                 fontFamily: "Poppins",
               }}
               styles={[{ stylers: [] }]}
@@ -245,7 +249,11 @@ function CreateRide(props: any) {
                   <div className="innerCircle"></div>
                 </div>
               </AdvancedMarker>
-              <Directions />
+              <Directions
+                sourceLatLng={sourceLatLng}
+                destinationLatLng={destinationLatLng}
+                setDistance={setDistance}
+              />
             </Map>
           </APIProvider>
           <div className="searchModal">
@@ -272,12 +280,14 @@ function CreateRide(props: any) {
               <ConfirmDetails
                 onNextClick={handleNextClick}
                 onBackClick={handleBackClick}
+                setIsConfirmLoading={setIsConfirmLoading}
               />
             )}
           </div>
         </IonContent>
       </IonPage>
       <IonLoading isOpen={isLoading}></IonLoading>
+      <IonLoading isOpen={isConfirmLoading}></IonLoading>
     </>
   );
 }

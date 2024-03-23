@@ -306,7 +306,7 @@
 }
 
 .profile_bioCard {
-  width: 60%;
+  width: 100%;
 }
 
 .profile_ratingsCard {
@@ -341,9 +341,13 @@
 
 .profile_vehicleHolder {
   display: flex;
-  justify-content: space-between;
-  padding: 10px;
+  /* justify-content: space-between; */
+  align-items: center;
+  padding: 10px 0px;
 }
+/* .profile_vehicleHolder ion-text {
+  flex: 1;
+} */
 
 .profile_vehicleHolder div {
   display: flex;
@@ -366,6 +370,7 @@
   height: 30px;
   width: 60px;
   justify-content: center;
+  margin-left: auto;
 }
 
 .profile_seatingCapacityHolder p {
@@ -424,8 +429,8 @@
 }
 
 .profileFooter {
-  padding: 15px 30px;
-  background-color: #d9d9d9;
+  padding: 20px 30px;
+  background-color: rgb(241, 241, 241);
 }
 
 .editProfileBtn {

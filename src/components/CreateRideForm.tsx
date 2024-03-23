@@ -8,6 +8,7 @@ import {
   IonLabel,
   IonLifeCycleContext,
   IonList,
+  IonLoading,
   IonModal,
   IonRadio,
   IonRadioGroup,
@@ -24,28 +25,29 @@ import {
 } from "ionicons/icons";
 import StartRideDetails from "../types/StartRideDetails";
 import startRide from "../functions/startRide";
+import { IonReactRouter } from "@ionic/react-router";
 
 export function SelectVehicle(props: any) {
   let details: any = localStorage.getItem("createRideDetails");
   if (details) {
     details = JSON.parse(details);
   }
-  const [selectedVehicle, setSelectedVehicle] = useState<any>(
-    details?.vehicleIndex || 0
-  );
+  let index = details?.vehicleIndex ? details?.vehicleIndex : 0;
+  const selectedVehicle = useRef<number>(index);
+  console.log(selectedVehicle);
   const routerContext = useContext(IonRouterContext);
   const handleSelectedVehicleChange = (event: any) => {
     let index = event?.detail?.value;
-    setSelectedVehicle(index);
+    selectedVehicle.current = index;
   };
   const onVehicleBackClick = () => {};
 
   const onVehicleNextClick = () => {
     let createRideDetails = {
       ...details,
-      vehicleIndex: selectedVehicle,
-      vehicle: props.vehicles[selectedVehicle],
-      vehicleId: props.vehicles[selectedVehicle]?.Id,
+      vehicleIndex: selectedVehicle.current,
+      vehicle: props.vehicles[selectedVehicle.current],
+      vehicleId: props.vehicles[selectedVehicle.current]?.Id,
     };
     let data = JSON.stringify(createRideDetails);
     localStorage.setItem("createRideDetails", data);
@@ -62,7 +64,7 @@ export function SelectVehicle(props: any) {
       <IonText className="title">Select Vehicle</IonText>
       <div className="vehicleInfo">
         <IonRadioGroup
-          value={selectedVehicle}
+          value={selectedVehicle.current}
           onIonChange={handleSelectedVehicleChange}
         >
           {props.vehicles.map((vehicle: any, index: any) => (
@@ -94,9 +96,15 @@ export function SelectCoRiders(props: any) {
     details = JSON.parse(details);
   }
   const [vehicle, setVehicle] = useState<any>();
-  const [noOfCoRiders, setNoOfCoRiders] = useState<number>(
-    details?.seatingCapacity || 1
-  );
+  const [noOfCoRiders, setNoOfCoRiders] = useState<number>(() => {
+    if (
+      details?.seatingCapacity > 0 &&
+      details?.seatingCapacity < details?.vehicle?.SeatingCapacity
+    ) {
+      return details?.seatingCapacity;
+    }
+    return 1;
+  });
 
   const onCoRidersBackClick = () => {
     props.onBackClick();
@@ -171,7 +179,7 @@ export function SelectSchedule(props: any) {
   const [selectedDateTime, setSelectedDateTime] = useState<string>(
     details?.schedule || currentDate
   );
-  const [timeRemaining, setTimeRemaining] = useState<string>();
+  const timeRemaining: any = useRef();
   const [isNow, setIsNow] = useState<boolean>(true);
   localStorage.setItem("isNow", "false");
 
@@ -210,28 +218,28 @@ export function SelectSchedule(props: any) {
     const minutes = Math.floor((secondsRemaining % 3600) / 60);
     const seconds = secondsRemaining % 60;
     if (seconds < 0) {
-      setTimeRemaining("Ride will start immediately");
+      timeRemaining.current = "Ride will start immediately";
       setIsNow(true);
       localStorage.setItem("isNow", "true");
       return;
     }
     setIsNow(false);
     localStorage.setItem("isNow", "false");
-    setTimeRemaining(`Time to start: ${hours}:${minutes}:${seconds}`);
+    timeRemaining.current = `Time to start: ${hours}:${minutes}:${seconds}`;
   };
 
   return (
     <div id="container" className="container visible">
       <IonText className="title">Select Schedule</IonText>
       <div className="scheduleInfo">
-        <IonDatetimeButton datetime="datetime"></IonDatetimeButton>
         <div className="description">
-          {timeRemaining ? (
-            <div>{timeRemaining}</div>
+          {timeRemaining.current ? (
+            <div>{timeRemaining.current}</div>
           ) : (
             <div>Ride will start immediately</div>
           )}
         </div>
+        <IonDatetimeButton datetime="datetime"></IonDatetimeButton>
         <IonModal keepContentsMounted={true}>
           <IonDatetime
             id="datetime"
@@ -271,11 +279,15 @@ export function ConfirmDetails(props: any) {
 
   const currentDate = new Date().toISOString();
 
+  const ionRouterContext = useContext(IonRouterContext);
+
   const onConfirmBackClick = () => {
     props.onBackClick();
   };
 
   const onConfirmSubmitClick = () => {
+    props.setIsConfirmLoading(true);
+    console.log("set to turu");
     let confirmDetails: StartRideDetails = {
       ...details,
       sourceInput: sourceInput,
@@ -290,8 +302,9 @@ export function ConfirmDetails(props: any) {
       let response = await startRide(confirmDetails);
       console.log(response);
       console.log("loaded");
+      props.setIsConfirmLoading(false);
+      ionRouterContext.push("/ridedetails", "root");
     };
-    console.log("loading");
     submitCreateRideForm();
   };
   return (

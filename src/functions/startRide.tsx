@@ -9,17 +9,18 @@ const startRide = async (d: StartRideDetails) => {
       "https://codrive.pythonanywhere.com/start_ride",
       {
         params: {
-          userId: "zoRqVAbw0ZI13ndOs0ni",
+          userId: "Q8CsASuoYfTMeXksekar",
           vehicleId: d?.vehicleId,
           totalDistance: "2km",
           s_lat: d?.sourceLatLng?.lat,
           s_lng: d?.sourceLatLng?.lng,
           s_str: d?.sourceInput,
-          d_lat: d?.sourceLatLng?.lat,
-          d_lng: d?.sourceLatLng?.lng,
+          d_lat: d?.destinationLatLng?.lat,
+          d_lng: d?.destinationLatLng?.lng,
           d_str: d?.destinationInput,
           isNow: d?.isNow,
           startTime: d?.startTime,
+          seatingCapacity: d?.seatingCapacity,
         },
       }
     );

@@ -23,6 +23,7 @@ import {
   IonList,
   IonSearchbar,
   IonIcon,
+  IonAlert,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import React, {
@@ -40,10 +41,13 @@ import getUser from "../../functions/getUser";
 import {
   exitOutline,
   helpOutline,
+  personCircleOutline,
+  personOutline,
   reloadOutline,
   settingsOutline,
   triangleOutline,
   walletOutline,
+  warning,
   warningOutline,
 } from "ionicons/icons";
 
@@ -51,6 +55,8 @@ function Home() {
   const [selectedTab, setSelectedTab] = useState<any>("tab1");
   const [user, setUser] = useState<any>(localStorage.getItem("user"));
   const [loaded, setLoaded] = useState<any>(false);
+  const [isOpen, setIsOpen] = useState<any>(false);
+  const [msg, setMsg] = useState<any>("not set");
 
   const carSportBlack = "/assets/images/carSportBlack.svg";
   const carSportGreen = "/assets/images/carSportGreen.svg";
@@ -65,7 +71,8 @@ function Home() {
     console.log("home rendered");
     setLoaded(true);
     const fetchUser = async () => {
-      let user = await getUser();
+      let userId = localStorage.getItem("userId") as string;
+      let user = await getUser(userId);
       console.log("Home", user);
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
@@ -94,6 +101,18 @@ function Home() {
     }
   };
 
+  const handleModalDismiss = () => {
+    let md = document?.getElementById(
+      "destinationModal"
+    ) as HTMLIonModalElement;
+    md.dismiss();
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    ionRouterContext.push("/login", "root");
+  };
+
   return (
     <>
       <IonMenu contentId="main-content" className="menu">
@@ -110,7 +129,7 @@ function Home() {
                 ></IonImg>
               </div>
               <div>
-                <IonLabel>Shinosuke Nohara</IonLabel>
+                <IonLabel>{`${user?.FirstName} ${user?.LastName}`}</IonLabel>
                 <IonLabel style={{ color: "#a1a1a1", marginTop: "3px" }}>
                   View Profile
                 </IonLabel>
@@ -121,7 +140,11 @@ function Home() {
               <IonIcon slot="start" icon={reloadOutline}></IonIcon>
               <IonLabel>History</IonLabel>
             </IonItem>
-            <IonItem routerLink="/profile">
+            <IonItem routerLink="/login">
+              <IonIcon slot="start" icon={personOutline}></IonIcon>
+              <IonLabel>Login</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/wallet">
               <IonIcon slot="start" icon={walletOutline}></IonIcon>
               <IonLabel>Wallet</IonLabel>
             </IonItem>
@@ -133,11 +156,15 @@ function Home() {
               <IonIcon slot="start" icon={helpOutline}></IonIcon>
               <IonLabel>Support</IonLabel>
             </IonItem>
-            <IonItem routerLink="/profile">
-              <IonIcon slot="start" icon={warningOutline}></IonIcon>
+            <IonItem routerLink="/sos">
+              <IonIcon
+                slot="start"
+                icon={warningOutline}
+                style={{ color: "red" }}
+              ></IonIcon>
               <IonLabel>SOS</IonLabel>
             </IonItem>
-            <IonItem routerLink="/profile">
+            <IonItem onClick={handleLogout}>
               <IonIcon slot="start" icon={exitOutline}></IonIcon>
               <IonLabel>Logout</IonLabel>
             </IonItem>
@@ -150,14 +177,19 @@ function Home() {
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonMenuButton></IonMenuButton>
+              <IonMenuButton
+                onClick={() => handleModalDismiss()}
+              ></IonMenuButton>
             </IonButtons>
             <IonTitle style={{ textAlign: "center", fontWeight: "bold" }}>
               {selectedTab === "tab1" ? "Join Ride" : "Drive"}
             </IonTitle>
             <IonButtons slot="end">
               <div
-                onClick={handleProfileClick}
+                onClick={() => {
+                  handleModalDismiss();
+                  handleProfileClick();
+                }}
                 className="profileIcon"
                 style={{ marginRight: "10px" }}
               >
