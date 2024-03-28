@@ -76,7 +76,7 @@ const Login: React.FC = () => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       auth: {
-        username: import.meta.env.TWILIO_USERNAME,
+        username: import.meta.env.VITE_TWILIO_USERNAME,
         password: import.meta.env.VITE_TWILIO_AUTH_ID,
       },
     };

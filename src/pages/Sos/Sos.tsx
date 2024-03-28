@@ -102,7 +102,7 @@ const Tab: React.FC = () => {
   const sendMessage = async (contactNumber: number, message: string) => {
     let myNumber = localStorage.getItem("phoneNumber");
     let msg = message + " message from +91 " + myNumber;
-    const url = `"https://api.twilio.com/2010-04-01/Accounts/${
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${
       import.meta.env.VITE_TWILIO_URL
     }`;
     const data = new URLSearchParams();
