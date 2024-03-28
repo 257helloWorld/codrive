@@ -1,6 +1,6 @@
 .findRideContent::part(scroll) {
-  /* display: flex;
-  flex-direction: column; */
+  display: flex;
+  flex-direction: column;
 }
 
 .findSearchModal {
@@ -23,7 +23,8 @@
   border-radius: 30px;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 0 10px;
+  padding-left: 30px;
   margin-top: auto;
   background-color: rgb(235, 235, 235);
 }
@@ -38,9 +39,9 @@
 }
 
 .findSearchModal .charges .amount {
-  font-weight: bold;
   font-size: 25px;
   color: green;
+  font-weight: bold;
 }
 
 .balance .amount {
@@ -111,7 +112,7 @@
   margin: auto;
 }
 
-.searchRidesModalContent::part(scroll) {
+.searchRidesModalContent {
   display: flex;
   flex-direction: column;
 }
@@ -215,7 +216,6 @@
   --background: black;
   --box-shadow: none;
   height: 45px;
-  max-width: 90px;
 }
 
 .dashedLine {
@@ -224,4 +224,29 @@
   width: 90%;
   border: 1px dashed rgb(158, 158, 158);
   opacity: 50%;
+}
+
+.ridesHolder {
+  overflow-y: scroll;
+}
+
+.requestedMessage {
+  display: flex;
+  border-radius: 15px;
+  background-color: rgb(208, 255, 208);
+  width: 90%;
+  margin: auto;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  color: green;
+}
+.amountMessage {
+  display: flex;
+  border-radius: 15px;
+  background-color: rgb(28, 28, 28);
+  width: 90%;
+  margin: auto;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  color: rgb(225, 225, 225);
 }

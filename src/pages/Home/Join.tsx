@@ -31,6 +31,7 @@ import getDirections from "../../functions/getDirections";
 import getUser from "../../functions/getUser";
 
 import LatLng from "../../types/LatLng";
+import { useLocation } from "react-router";
 
 const mapId = import.meta.env.VITE_APP_GOOGLE_MAPS_MAP_ID;
 const apiKey = import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY;
@@ -61,13 +62,15 @@ const Join = (props: any) => {
   const [isFirstCall, setIsFirstCall] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isSecondCall, setIsSecondCall] = useState<boolean>(false);
-  const [height, setHeight] = useState<number>(80);
+  const [height, setHeight] = useState<number>(60);
+  const [isLocatingSource, setIsLocatingSource] = useState<boolean>(true);
 
   const sourceInputValue = useRef<any>();
   const destinationInputValue = useRef<any>();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isSourceValid, setIsSourceValid] = useState<boolean>(false);
+  const [isDestinationValid, setIsDestinationValid] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>();
   const [origin, setOrigin] = useState<any>({ lat: 19.0989, lng: 72.8515 });
   const [destination, setDestination] = useState({
@@ -77,6 +80,10 @@ const Join = (props: any) => {
 
   const modal = useRef<HTMLIonModalElement>(null);
   const confirmModalRef = useRef<HTMLIonModalElement>(null);
+
+  const ionRouterContext = useContext(IonRouterContext);
+
+  let firstName = JSON.parse(localStorage.getItem("user") as string)?.FirstName;
 
   let debounceTimer: any;
 
@@ -119,7 +126,8 @@ const Join = (props: any) => {
 
   useEffect(() => {
     const getUserDetails = async () => {
-      let user = await getUser();
+      let userId = localStorage.getItem("userId") as string;
+      let user = await getUser(userId);
     };
     getUserDetails();
     getCenterPlace();
@@ -163,11 +171,15 @@ const Join = (props: any) => {
       return;
     }
     const newCenter = mapRef?.getCenter();
-    let sourceLatLng = {
+    let centerLatLng = {
       lat: newCenter?.lat(),
       lng: newCenter?.lng(),
     };
-    localStorage.setItem("sourceLatLng", JSON.stringify(sourceLatLng));
+    if (isLocatingSource) {
+      localStorage.setItem("sourceLatLng", JSON.stringify(centerLatLng));
+    } else {
+      localStorage.setItem("destinationLatLng", JSON.stringify(centerLatLng));
+    }
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
       getCenterPlace();
@@ -187,6 +199,12 @@ const Join = (props: any) => {
     setCenterLatLng(currentLocation);
 
     setIsSourceValid(true);
+    let sourceInputTxt = document.getElementById(
+      "sourceInputTxt"
+    ) as HTMLInputElement;
+    if (sourceInputTxt) {
+      sourceInputTxt.blur();
+    }
   };
 
   const getCenterPlace = () => {
@@ -200,13 +218,26 @@ const Join = (props: any) => {
         if (results[0]) {
           console.log("center changed", sourceInputValue.current);
           // if (!sourceInputValue.current) return;
-          let sourceTxt = document.getElementById(
-            "sourceInputTxt"
-          ) as HTMLInputElement;
-          sourceTxt.value = results[0].formatted_address;
-          setIsSourceValid(true);
+
           console.log(results[0]);
-          localStorage.setItem("sourceInput", results[0].formatted_address);
+          if (isLocatingSource) {
+            let sourceTxt = document.getElementById(
+              "sourceInputTxt"
+            ) as HTMLInputElement;
+            sourceTxt.value = results[0].formatted_address;
+            setIsSourceValid(true);
+            localStorage.setItem("sourceInput", results[0].formatted_address);
+          } else {
+            let destinationTxt = document.getElementById(
+              "destinationInputTxt"
+            ) as HTMLInputElement;
+            destinationTxt.value = results[0].formatted_address;
+            setIsDestinationValid(true);
+            localStorage.setItem(
+              "destinationInput",
+              results[0].formatted_address
+            );
+          }
         } else {
           console.log("No results found");
           return "";
@@ -220,15 +251,25 @@ const Join = (props: any) => {
 
   useEffect(() => {
     console.log("home rendered");
-    let msg = localStorage.getItem("msg");
-    if (!msg) {
-      setMsg("not set");
-      setIsAlertOpen(true);
-      return;
-    }
-    setMsg(msg);
-    setIsAlertOpen(true);
+    // let msg = localStorage.getItem("msg");
+    // if (!msg) {
+    //   setMsg("not set");
+    //   setIsAlertOpen(true);
+    //   return;
+    // }
+    // setMsg(msg);
+    // setIsAlertOpen(true);
   }, []);
+
+  const handleViewRideClick = () => {
+    let rideId = props.isOnRide[1];
+    console.log("id", rideId);
+    ionRouterContext.push(`/ridedetails?rideId=${rideId}`);
+  };
+
+  useEffect(() => {
+    localStorage.removeItem("requestedRides");
+  }, [props.isOnRide]);
 
   return (
     <>
@@ -249,7 +290,13 @@ const Join = (props: any) => {
             >
               <div className="locationPin">
                 <div>
-                  <IonText>Source</IonText>
+                  <IonText>
+                    {isLocatingSource ? (
+                      "Source"
+                    ) : (
+                      <>&nbsp;&nbsp;Drop&nbsp;&nbsp;</>
+                    )}
+                  </IonText>
                 </div>
                 <IonIcon icon={pin}></IonIcon>
               </div>
@@ -262,28 +309,48 @@ const Join = (props: any) => {
         </div>
         {/* DestinationInput */}
         {props.selectedTab === "tab1" ? (
-          <div
-            style={{
-              height: "70px",
-              display: "flex",
-            }}
-          >
-            <IonItem lines="none" id="destinationInputHolder">
-              <IonIcon
-                slot="start"
-                icon={locationSharp}
-                style={{ marginRight: "10px", marginLeft: "10px" }}
-                color="black"
-              ></IonIcon>
-              <IonInput
-                readonly={true}
-                value={""}
-                placeholder="Enter Destination"
-                // onClick={props.hdc}
-                onClick={handleDestinationClick}
-              ></IonInput>
-            </IonItem>
-          </div>
+          <>
+            <div
+              style={{
+                height: "70px",
+                display: "flex",
+              }}
+            >
+              <IonItem lines="none" id="destinationInputHolder">
+                <IonIcon
+                  slot="start"
+                  icon={locationSharp}
+                  style={{ marginRight: "10px", marginLeft: "10px" }}
+                  color="black"
+                ></IonIcon>
+                <IonInput
+                  readonly={true}
+                  value={""}
+                  placeholder="Enter Destination"
+                  onClick={handleDestinationClick}
+                ></IonInput>
+              </IonItem>
+            </div>
+            <div
+              className="welcomeContainer"
+              style={{
+                height: "20%",
+                width: "90%",
+                margin: "auto",
+                padding: "10px 0",
+              }}
+            >
+              <IonText style={{ fontSize: "20px", fontWeight: "600" }}>
+                Welcome, <span style={{ color: "green" }}>{firstName} :)</span>
+              </IonText>
+              <br />
+              <div style={{ margin: "10px" }}></div>
+              <IonText style={{ color: "darkgray", lineHeight: "2" }}>
+                Reach your destination by joining someone's ride or Create your
+                own ride for the day!
+              </IonText>
+            </div>
+          </>
         ) : (
           <div className="driveTabContainer">
             <IonText className="title">Select action</IonText>
@@ -324,9 +391,23 @@ const Join = (props: any) => {
           renderDirection={renderDirection}
           setIsConfirmOpen={setIsConfirmOpen}
           isSourceValid={isSourceValid}
+          isDestinationValid={isDestinationValid}
+          setIsDestinationValid={setIsDestinationValid}
           setIsSourceValid={setIsSourceValid}
           selectedTab={props.selectedTab}
+          setIsLocatingSource={setIsLocatingSource}
         />
+        {props?.isOnRide && props?.isOnRide[0] && (
+          <div className="modal-background">
+            <div className="modal-content">
+              <IonText>You are currently on a Ride!</IonText>
+              <IonButton onClick={handleViewRideClick}>View Ride</IonButton>
+              <IonText style={{ color: "darkgray" }}>
+                You cannot Join or Create a new Ride
+              </IonText>
+            </div>
+          </div>
+        )}
       </IonContent>
 
       <IonAlert

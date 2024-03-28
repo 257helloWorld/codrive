@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'maps',
+  appId: 'in.codrive.io',
+  appName: 'CoDrive',
   webDir: 'dist',
   server: {
     androidScheme: 'https'

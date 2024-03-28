@@ -6,17 +6,18 @@ const joinRide = async (d: JoinRideDetails) => {
   try {
     let data = await axios.get("https://codrive.pythonanywhere.com/join_ride", {
       params: {
-        userId: "Q8CsASuoYfTMeXksekar",
-        rideId: "LknG10qarBrKgoYnTAmj",
+        userId: d?.userId,
+        rideId: d?.rideId,
         p_lat: d?.pickup?.lat,
         p_lng: d?.pickup?.lng,
         p_str: d?.pickupInput,
         d_lat: d?.drop?.lat,
         d_lng: d?.drop?.lng,
         d_str: d?.dropInput,
+        amount: d?.amount,
       },
     });
-
+    console.log("join ride data", d);
     message = data.data.message;
   } catch (error) {
     console.error(error);

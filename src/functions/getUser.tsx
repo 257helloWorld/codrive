@@ -11,13 +11,18 @@ const isToday = (storedDate: string) => {
   return storedDate === today;
 };
 
-const getUser = async (userId: string) => {
+const getUser = async (userId: string, cached: boolean = true) => {
   let user;
   try {
     const cachedUserData = localStorage.getItem("savedUser");
     const lastUpdatedDate = localStorage.getItem("lastUpdatedDate");
 
-    if (cachedUserData && lastUpdatedDate && isToday(lastUpdatedDate)) {
+    if (
+      cached === true &&
+      cachedUserData &&
+      lastUpdatedDate &&
+      isToday(lastUpdatedDate)
+    ) {
       console.log("fetched from cache");
       return JSON.parse(cachedUserData);
     }
@@ -30,6 +35,7 @@ const getUser = async (userId: string) => {
     });
 
     localStorage.setItem("savedUser", JSON.stringify(data.data));
+    localStorage.setItem("user", JSON.stringify(data.data));
     localStorage.setItem("lastUpdatedDate", getTodayDateString());
 
     user = data.data;

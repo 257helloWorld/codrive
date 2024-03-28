@@ -13,6 +13,7 @@ import {
   IonImg,
   IonInput,
   IonLabel,
+  IonLoading,
   IonMenuButton,
   IonPage,
   IonRow,
@@ -21,15 +22,86 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Wallet.css";
-import { navigateOutline } from "ionicons/icons";
+import { cashOutline, navigateOutline } from "ionicons/icons";
 import {
   Autocomplete,
   StandaloneSearchBox,
   LoadScript,
 } from "@react-google-maps/api";
 import { useEffect, useState } from "react";
+import { firestore } from "../../services/firebase";
+import firebase from "firebase/compat/app";
+import { getuid } from "process";
+import getUser from "../../functions/getUser";
+// import firebase from "firebase/compat/app";
 
 const Wallet: React.FC = () => {
+  const [isLoading, setIsLoading] = useState<boolean>();
+  let userId = JSON.parse(localStorage.getItem("user") as string)?.Id;
+  const [transactions, setTransactions] = useState<any[]>();
+  const [balance, setBalance] = useState<number>(0);
+
+  const fetchTransactions = async () => {
+    console.log("loading");
+    try {
+      const userDocRef = firestore.collection("Users").doc(userId);
+      const snapshot = await userDocRef
+        .collection("Transactions")
+        .orderBy("Time", "desc")
+        .get();
+      const transactionsData = snapshot.docs.map((doc: any) => doc.data());
+      setTransactions(transactionsData);
+      console.log(transactionsData);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const updateBalance = () => {
+    let balance = JSON.parse(localStorage.getItem("user") as string)?.Balance;
+    setBalance(balance);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchTransactions();
+    updateBalance();
+  }, []);
+
+  const depositClick = async () => {
+    setIsLoading(true);
+    const userDocRef = firebase.firestore().collection("Users").doc(userId);
+    await userDocRef.update({
+      Balance: balance + 50,
+    });
+
+    const transactionRef = await userDocRef.collection("Transactions").add({
+      Amount: 50,
+      Type: "Deposit",
+      Message: "Added to Wallet",
+      Time: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await getUser(userId, false);
+    updateBalance();
+    fetchTransactions();
+  };
+  const withdrawClick = async () => {
+    setIsLoading(true);
+    const userDocRef = firebase.firestore().collection("Users").doc(userId);
+    await userDocRef.update({
+      Balance: balance - 50,
+    });
+    const transactionRef = await userDocRef.collection("Transactions").add({
+      Amount: 50,
+      Type: "Withdraw",
+      Message: "Withdrawn to Bank",
+      Time: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await getUser(userId, false);
+    updateBalance();
+    fetchTransactions();
+  };
   return (
     <>
       <IonPage>
@@ -49,69 +121,85 @@ const Wallet: React.FC = () => {
 
         <IonContent>
           <div
+            className="BalanceHolder"
             style={{
-              height: "130px",
+              margin: "auto",
               width: "90%",
-              margin: "5%",
-              marginTop: "30px",
-              marginBottom: "10px",
-              padding: "20px 20px 20px 20px",
-              backgroundColor: "#f1f1f1",
+              marginTop: "20px",
+              borderRadius: "15px",
+              backgroundColor: "#1d1d1d",
+              color: "lightgray",
+              padding: "20px 30px",
             }}
           >
-            <IonLabel className="balance">Balance</IonLabel>
-            <br></br>
-            <IonGrid style={{ paddingRight: "10px" }}>
-              <IonRow>
-                <IonCol size="1">
-                  {/* <IonImg src={rupee} className="payment_img"></IonImg> */}
-                  <IonText>Rs.</IonText>
-                </IonCol>
-                <IonCol size="4">
-                  <IonLabel className="amount">00.00</IonLabel>
-                </IonCol>
-                <IonCol size="6" style={{ marginRight: "5px" }}>
-                  <IonButton className="wallet">RECHARGE WALLET</IonButton>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
+            <IonText>Balance</IonText>
+            <div style={{ margin: "7px" }}></div>
+            <IonText style={{ fontSize: "24px", fontWeight: "600" }}>
+              Rs. {balance}
+            </IonText>
+            <div className="walletButtons">
+              <IonButton onClick={depositClick}>Deposit</IonButton>
+              <IonButton onClick={withdrawClick}>Withdraw</IonButton>
+            </div>
           </div>
+          <div style={{ margin: "20px" }}></div>
+          <IonText style={{ marginLeft: "25px" }}>My Transactions </IonText>
 
-          <IonLabel className="balance_transaction">My Transactions </IonLabel>
-
-          <IonCard
-            style={{
-              marginTop: "10px",
-              paddind: "10",
-              paddingBottom: "10px",
-              marginLeft: "5%",
-              marginRight: "5%",
-            }}
-          >
-            <IonGrid>
-              <IonRow>
-                <IonCol size="8">
-                  <IonLabel className="balance_payment">
-                    Paid for ticket
-                  </IonLabel>
-                </IonCol>
-                <IonCol size="1">
-                  <IonLabel className="py_amount">-</IonLabel>
-                </IonCol>
-                <IonCol size="1">
-                  {/* <IonImg src={rupee} className="payment_rupee"></IonImg> */}
-                  <IonText>Rs.</IonText>
-                </IonCol>
-                <IonCol size="1">
-                  <IonLabel className="py_amount">5</IonLabel>
-                </IonCol>
-              </IonRow>
-            </IonGrid>
-
-            <IonLabel className="datetime">11:40 AM, 21 Feb 2024</IonLabel>
-          </IonCard>
+          {transactions &&
+            transactions.length > 0 &&
+            transactions.map((transaction: any, index: number) => (
+              <div className="transactionCard" key={index}>
+                <div className="cardTop">
+                  <IonText style={{ color: "darkgray" }}>
+                    {transaction?.Time?.toDate().toLocaleString()}
+                  </IonText>
+                </div>
+                <div
+                  className="cardHeader"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: "17px",
+                    margin: "8px 0",
+                  }}
+                >
+                  <IonText style={{ fontWeight: "600" }}>
+                    {transaction?.Message}
+                  </IonText>
+                  <div>
+                    <IonText
+                      style={{
+                        fontWeight: "600",
+                        color: `${
+                          transaction?.Type === "Debit" ||
+                          transaction?.Type === "Withdraw"
+                            ? "red"
+                            : "green"
+                        }`,
+                      }}
+                    >
+                      Rs.{" "}
+                      {transaction?.Type === "Debit" ||
+                      transaction?.Type === "Withdraw"
+                        ? "-"
+                        : "+"}{" "}
+                      {transaction?.Amount}
+                    </IonText>
+                  </div>
+                </div>
+                <div className="cardContent">
+                  <IonText style={{ color: "darkgray" }}>
+                    Click to see details
+                  </IonText>
+                </div>
+                <div className="cardFooter">
+                  <IonText></IonText>
+                </div>
+              </div>
+            ))}
         </IonContent>
       </IonPage>
+      <IonLoading isOpen={isLoading}></IonLoading>
     </>
   );
 };

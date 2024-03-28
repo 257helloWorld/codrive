@@ -26,6 +26,7 @@ import {
   useMap,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
+import getUser from "../../functions/getUser";
 // import { PathLayer } from '@deck.gl/layers';
 
 const mapOptions = {
@@ -75,7 +76,8 @@ const Directions = (props: any) => {
         // provideRouteAlternatives: true,
       })
       .then((response: any) => {
-        props.setDistance(response?.routes[0]?.legs[0]?.distance?.text);
+        let dist = response?.routes[0]?.legs[0]?.distance?.text;
+        props.setDistance(parseFloat(dist));
         directionsRenderer.setDirections(response);
         setRoutes(response.routes);
       });
@@ -99,7 +101,7 @@ function CreateRide(props: any) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [polylineCords, setPolylineCords] = useState<any>();
   const [sourceLatLng, setSourceLatLng] = useState<any>();
-  const [vehicles, setVechicles] = useState<any>([]);
+  const [vehicles, setVehicles] = useState<any>([]);
   const [destinationLatLng, setDestinationLatLng] = useState<any>(
     localStorage.getItem("destinationLatLng")
   );
@@ -110,6 +112,7 @@ function CreateRide(props: any) {
     localStorage.getItem("destinationInput")
   );
   const [isConfirmLoading, setIsConfirmLoading] = useState<boolean>(false);
+  const [vehiclesWillUpdate, setVehiclesWillUpdate] = useState<boolean>(false);
 
   const formTabs: any = {
     1: "selectVehicle",
@@ -132,8 +135,10 @@ function CreateRide(props: any) {
     if (!user) return;
     user = JSON.parse(user);
     let vehicles = user?.Vehicles;
-    setVechicles(vehicles);
-    console.log();
+    let fVehicles = vehicles.filter(
+      (vehicle: any) => vehicle?.IsRemoved !== true
+    );
+    setVehicles(fVehicles);
   }, []);
 
   useEffect(() => {
@@ -186,6 +191,17 @@ function CreateRide(props: any) {
   useEffect(() => {
     console.log(isConfirmLoading);
   }, [isConfirmLoading]);
+
+  const updateVehicles = () => {
+    let user: any = localStorage.getItem("user");
+    if (!user) return;
+    user = JSON.parse(user);
+    let vehicles = user?.Vehicles;
+    let fVehicles = vehicles.filter(
+      (vehicle: any) => vehicle?.IsRemoved !== true
+    );
+    setVehicles(fVehicles);
+  };
 
   return (
     <>
@@ -262,6 +278,8 @@ function CreateRide(props: any) {
                 vehicles={vehicles}
                 onNextClick={handleNextClick}
                 onBackClick={handleBackClick}
+                setVehiclesWillUpdate={setVehiclesWillUpdate}
+                updateVehicles={updateVehicles}
               />
             )}
             {formTabs[visibleForm.toString()] === "selectCoriders" && (
@@ -281,6 +299,7 @@ function CreateRide(props: any) {
                 onNextClick={handleNextClick}
                 onBackClick={handleBackClick}
                 setIsConfirmLoading={setIsConfirmLoading}
+                distance={distance}
               />
             )}
           </div>

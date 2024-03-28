@@ -33,12 +33,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Route, Redirect } from "react-router";
+import { Route, Redirect, useLocation } from "react-router";
 import Tab1 from "./Join";
 import "./Home.css";
 import Tab2 from "./Drive";
 import getUser from "../../functions/getUser";
 import {
+  carSport,
+  carSportOutline,
   exitOutline,
   helpOutline,
   personCircleOutline,
@@ -50,6 +52,7 @@ import {
   warning,
   warningOutline,
 } from "ionicons/icons";
+import axios from "axios";
 
 function Home() {
   const [selectedTab, setSelectedTab] = useState<any>("tab1");
@@ -57,6 +60,7 @@ function Home() {
   const [loaded, setLoaded] = useState<any>(false);
   const [isOpen, setIsOpen] = useState<any>(false);
   const [msg, setMsg] = useState<any>("not set");
+  const [isOnRide, setIsOnRide] = useState<any>();
 
   const carSportBlack = "/assets/images/carSportBlack.svg";
   const carSportGreen = "/assets/images/carSportGreen.svg";
@@ -67,18 +71,36 @@ function Home() {
 
   const modal = useRef<HTMLIonModalElement>(null);
 
+  const location: any = useLocation();
+
+  const checkIsUserOnRide = async () => {
+    let user = JSON.parse(localStorage.getItem("user") as string);
+    let userId = user?.Id;
+    let result = await axios.get(
+      "https://codrive.pythonanywhere.com/get_is_on_ride",
+      {
+        params: {
+          userId: userId,
+        },
+      }
+    );
+    setIsOnRide(result?.data);
+    console.log("checkis user", result.data);
+  };
+
   useEffect(() => {
     console.log("home rendered");
     setLoaded(true);
+    let userId = localStorage.getItem("userId") as string;
     const fetchUser = async () => {
-      let userId = localStorage.getItem("userId") as string;
-      let user = await getUser(userId);
+      let user = await getUser(userId, true);
       console.log("Home", user);
       setUser(user);
       localStorage.setItem("user", JSON.stringify(user));
     };
     fetchUser();
     localStorage.removeItem("createRideDetails");
+    checkIsUserOnRide();
   }, []);
 
   const handleProfileClick = () => {
@@ -113,6 +135,10 @@ function Home() {
     ionRouterContext.push("/login", "root");
   };
 
+  useEffect(() => {
+    checkIsUserOnRide();
+  }, [location]);
+
   return (
     <>
       <IonMenu contentId="main-content" className="menu">
@@ -136,25 +162,17 @@ function Home() {
               </div>
             </IonItem>
             <hr></hr>
+            <IonItem routerLink="/managevehicles">
+              <IonIcon slot="start" icon={carSportOutline}></IonIcon>
+              <IonLabel>Manage Vehicles</IonLabel>
+            </IonItem>
             <IonItem routerLink="/history">
               <IonIcon slot="start" icon={reloadOutline}></IonIcon>
-              <IonLabel>History</IonLabel>
-            </IonItem>
-            <IonItem routerLink="/login">
-              <IonIcon slot="start" icon={personOutline}></IonIcon>
-              <IonLabel>Login</IonLabel>
+              <IonLabel>Ride History</IonLabel>
             </IonItem>
             <IonItem routerLink="/wallet">
               <IonIcon slot="start" icon={walletOutline}></IonIcon>
               <IonLabel>Wallet</IonLabel>
-            </IonItem>
-            <IonItem routerLink="/profile">
-              <IonIcon slot="start" icon={settingsOutline}></IonIcon>
-              <IonLabel>Settings</IonLabel>
-            </IonItem>
-            <IonItem routerLink="/profile">
-              <IonIcon slot="start" icon={helpOutline}></IonIcon>
-              <IonLabel>Support</IonLabel>
             </IonItem>
             <IonItem routerLink="/sos">
               <IonIcon
@@ -163,6 +181,14 @@ function Home() {
                 style={{ color: "red" }}
               ></IonIcon>
               <IonLabel>SOS</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile" disabled={true}>
+              <IonIcon slot="start" icon={settingsOutline}></IonIcon>
+              <IonLabel>Settings</IonLabel>
+            </IonItem>
+            <IonItem routerLink="/profile" disabled={true}>
+              <IonIcon slot="start" icon={helpOutline}></IonIcon>
+              <IonLabel>Support</IonLabel>
             </IonItem>
             <IonItem onClick={handleLogout}>
               <IonIcon slot="start" icon={exitOutline}></IonIcon>
@@ -206,6 +232,7 @@ function Home() {
             hdc={handleDestinationClick}
             handleJoinMapClick={handleJoinMapClick}
             selectedTab={selectedTab}
+            isOnRide={isOnRide}
           />
         </IonContent>
         <div

@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package in.codrive.io;
 
 import com.getcapacitor.BridgeActivity;
 

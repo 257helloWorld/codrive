@@ -40,6 +40,9 @@ import Sos from "./pages/Sos/Sos";
 import RideDetails from "./pages/RideDetails/RideDetails";
 import Wallet from "./pages/Wallet/Wallet";
 
+// import { Plugins } from "@capacitor/core";
+// const { SplashScreen } = Plugins;
+
 setupIonicReact();
 import {
   ActionPerformed,
@@ -47,15 +50,20 @@ import {
   PushNotifications,
   Token,
 } from "@capacitor/push-notifications";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "./pages/Login/Login";
 import CraftProfile from "./pages/CraftProfile/CraftProfile";
 import ImageCropper from "./pages/ImageCropper/ImageCropper";
+import ManageVehicles from "./pages/ManageVehicles/ManageVehicles";
 
 const App: React.FC = () => {
   const [message, setMessage] = useState<string>("Not initialzed");
 
   console.log("Initializing HomePage");
+
+  // useEffect(() => {
+  //   SplashScreen.hide();
+  // }, []);
 
   // PushNotifications.requestPermissions().then((result) => {
   //   if (result.receive === "granted") {
@@ -109,9 +117,10 @@ const App: React.FC = () => {
           <Route path="/login" component={Login} />
           <Route path="/craftprofile" component={CraftProfile} />
           <Route path="/imagecropper" component={ImageCropper} />
+          <Route path="/managevehicles" component={ManageVehicles} />
 
           <Route exact path="/">
-            <Redirect to="/home" />
+            <Redirect to="/login" />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

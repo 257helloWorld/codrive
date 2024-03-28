@@ -5,7 +5,7 @@ const getRideDetails = async (rideId: string) => {
   try {
     let data = await axios.get("https://codrive.pythonanywhere.com/get_ride", {
       params: {
-        rideId: "LknG10qarBrKgoYnTAmj",
+        rideId: rideId,
       },
     });
 

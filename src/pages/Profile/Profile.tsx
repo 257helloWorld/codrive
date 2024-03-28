@@ -102,10 +102,16 @@ const Profile: React.FC = () => {
               style={{ marginBottom: "10px" }}
             >
               <IonText className="profile_cardTitle">My Vehicles</IonText>
-              <IonButton className="profile_manageBtn">Manage</IonButton>
+              <IonButton
+                className="profile_manageBtn"
+                onClick={() =>
+                  ionRouterContext.push("/managevehicles", "forward")
+                }
+              >
+                Manage
+              </IonButton>
             </div>
-            {!user?.hasOwnProperty("Vehicles") ||
-            user?.Vehicles?.length != 0 ? (
+            {user?.hasOwnProperty("Vehicles") && user?.Vehicles?.length != 0 ? (
               <div className="profile_vehicleHolder">
                 <div>
                   <div

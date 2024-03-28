@@ -10,7 +10,13 @@ import {
   IonTitle,
 } from "@ionic/react";
 import "./Destination.css";
-import { closeOutline, locate, locationOutline, map } from "ionicons/icons";
+import {
+  closeOutline,
+  locate,
+  locationOutline,
+  map,
+  mapOutline,
+} from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 
 const location = "/assets/images/location.svg";
@@ -21,7 +27,7 @@ import getPlaces from "../functions/getPlaces";
 
 const Destination = (props: any) => {
   const [isSourceFocused, setIsSourceFocused] = useState(false);
-  const [isDestinationFocused, setIsDestinationFocused] = useState(true);
+  const [isDestinationFocused, setIsDestinationFocused] = useState(false);
   const [selectedInput, setSelectedInput] = useState<string>("Destination");
   const [places, setPlaces] = useState<any[]>();
   const [confirmDisabled, setConfirmDisabled] = useState<boolean>(true);
@@ -69,9 +75,11 @@ const Destination = (props: any) => {
     props.renderDirection();
     setIsDestinationValid(false);
     setIsSourceValid(false);
+    setIsDestinationFocused(false);
   };
 
   const handleOnPlaceClick = (place: any) => {
+    let formattedAddress = place.name + ", " + place.formatted_address;
     props?.modal?.current.setCurrentBreakpoint(0.8);
     setPlaces([]);
     let placeLatLng = {
@@ -85,10 +93,13 @@ const Destination = (props: any) => {
       }
       props.setOrigin(placeLatLng);
       localStorage.setItem("sourceLatLng", JSON.stringify(placeLatLng));
-      localStorage.setItem("sourceInput", place.name);
+      localStorage.setItem("sourceInput", formattedAddress);
       setIsSourceValid(true);
+      if (!isSourceValid && !props.isSourceValid) {
+        setIsSourceFocused(false);
+        setIsDestinationFocused(true);
+      }
     } else if (isDestinationFocused) {
-      let formattedAddress = place.name + ", " + place.formatted_address;
       props.destinationInputValue.current = formattedAddress;
       if (destinationInput?.current) {
         destinationInput.current.value = formattedAddress;
@@ -96,7 +107,7 @@ const Destination = (props: any) => {
       props.setDestination(placeLatLng);
       setIsDestinationValid(true);
       localStorage.setItem("destinationLatLng", JSON.stringify(placeLatLng));
-      localStorage.setItem("destinationInput", place.name);
+      localStorage.setItem("destinationInput", formattedAddress);
       // if (
       //   !props.sourceInputValue.current ||
       //   props.sourceInputValue.current === null
@@ -148,6 +159,8 @@ const Destination = (props: any) => {
   };
 
   const handleCurrentLocationClick = () => {
+    setIsDestinationFocused(false);
+    setIsSourceFocused(true);
     // props.sourceInputValue.current = "Your current location";
     if (sourceInput?.current) {
       sourceInput.current.value = "Your current location";
@@ -171,6 +184,16 @@ const Destination = (props: any) => {
   };
 
   const handleLocateOnMapClick = () => {
+    props.setIsLocatingSource(true);
+    setIsDestinationFocused(false);
+    setIsSourceFocused(true);
+    props.modal?.current?.setCurrentBreakpoint(0.4);
+  };
+
+  const handleLocateOnMapDestinationClick = () => {
+    props.setIsLocatingSource(false);
+    setIsSourceFocused(false);
+    setIsDestinationFocused(true);
     props.modal?.current?.setCurrentBreakpoint(0.4);
   };
 
@@ -179,12 +202,35 @@ const Destination = (props: any) => {
   };
 
   useEffect(() => {
-    if ((isSourceValid || props.isSourceValid) && isDestinationValid) {
+    if (isDestinationFocused) {
+      props.setIsLocatingSource(false);
+    } else {
+      props.setIsLocatingSource(true);
+    }
+  }, [isSourceFocused, isDestinationFocused]);
+
+  useEffect(() => {
+    if (
+      (isSourceValid || props.isSourceValid) &&
+      !isDestinationValid &&
+      !props.isDestinationValid
+    ) {
+      // setIsDestinationFocused(true);
+    }
+    if (
+      (isSourceValid || props.isSourceValid) &&
+      (isDestinationValid || props.isDestinationValid)
+    ) {
       setConfirmDisabled(false);
     } else {
       setConfirmDisabled(true);
     }
-  }, [isSourceValid, isDestinationValid, props.isSourceValid]);
+  }, [
+    isSourceValid,
+    isDestinationValid,
+    props.isSourceValid,
+    props.isDestinationValid,
+  ]);
 
   useEffect(() => {
     let sourceTxt = document.getElementById(
@@ -202,15 +248,18 @@ const Destination = (props: any) => {
           setIsSourceValid(false);
           setIsDestinationValid(false);
         }}
-        onDidPresent={() => {
+        onDidPresent={async () => {
           let sourceTxt = document.getElementById(
             "sourceInputTxt"
           ) as HTMLInputElement;
           if (sourceTxt) {
             sourceTxt.value = "Your current location";
           }
-          props.setCurrentLocationAsSource();
+          await props.setCurrentLocationAsSource();
           props.setIsSourceValid(true);
+          // setIsSourceFocused(false);
+          // setIsDestinationFocused(true);
+          // destinationInput.current?.focus();
         }}
         id="destinationModal"
         ref={props.modal}
@@ -281,7 +330,7 @@ const Destination = (props: any) => {
               >
                 <IonRippleEffect className="roundedRipple"></IonRippleEffect>
                 <IonIcon icon={map}></IonIcon>
-                <IonText>Locate on Map</IonText>
+                <IonText>Locate</IonText>
               </div>
               <div
                 onClick={handleCurrentLocationClick}
@@ -289,7 +338,7 @@ const Destination = (props: any) => {
               >
                 <IonRippleEffect className="roundedRipple"></IonRippleEffect>
                 <IonIcon icon={locate}></IonIcon>
-                <IonText>Use My Current Location</IonText>
+                <IonText>Current Location</IonText>
               </div>
             </div>
             <div className="line"></div>
@@ -323,6 +372,7 @@ const Destination = (props: any) => {
                   <IonButton
                     onClick={() => {
                       setIsDestinationValid(false);
+                      props.setIsDestinationValid(false);
                       props.destinationInputValue.current = "";
                       if (destinationInput.current) {
                         destinationInput.current.value = "";
@@ -335,6 +385,20 @@ const Destination = (props: any) => {
                   </IonButton>
                 </IonButtons>
               </div>
+              <IonButtons>
+                <IonButton
+                  style={{
+                    height: "50px",
+                    width: "50px",
+                    "--border-radius": "15px",
+                    "--background": "#e5e5e5",
+                    marginLeft: "10px",
+                  }}
+                  onClick={handleLocateOnMapDestinationClick}
+                >
+                  <IonIcon icon={map}></IonIcon>
+                </IonButton>
+              </IonButtons>
             </div>
           </div>
           <div className="actionButtonsHolder">

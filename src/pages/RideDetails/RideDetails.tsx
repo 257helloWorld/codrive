@@ -1,4 +1,5 @@
 import {
+  IonAlert,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -11,6 +12,7 @@ import {
   IonLoading,
   IonPage,
   IonSkeletonText,
+  IonSpinner,
   IonText,
   IonTitle,
   IonToolbar,
@@ -27,14 +29,21 @@ import {
 import searchRides from "../../functions/searchRides";
 import "./RideDetails.css";
 import {
+  alarmOutline,
+  callOutline,
   carSportOutline,
+  cashOutline,
+  checkmarkCircle,
   checkmarkCircleOutline,
+  checkmarkOutline,
   filter,
+  informationCircleOutline,
   list,
   location,
   locationOutline,
   personOutline,
   resizeOutline,
+  text,
 } from "ionicons/icons";
 import { convertToPixelCrop } from "react-image-crop";
 import getRideDetails from "../../functions/getRideDetails";
@@ -42,6 +51,8 @@ import { firestore } from "../../services/firebase";
 import LatLng from "../../types/LatLng";
 import acceptRequest from "../../functions/Requests/acceptRequest";
 import rejectRequest from "../../functions/Requests/rejectRequest";
+import { useLocation } from "react-router";
+import axios from "axios";
 
 function Directions(props: any) {
   const map = useMap();
@@ -82,7 +93,8 @@ function Directions(props: any) {
         destination: props.destinationLatLng,
         waypoints: props.waypoints,
         travelMode: google.maps.TravelMode.DRIVING,
-        // provideRouteAlternatives: true,
+        provideRouteAlternatives: false,
+        optimizeWaypoints: true,
       })
       .then((response: any) => {
         console.log("renderer response", response);
@@ -123,14 +135,43 @@ function RideDetails(props: any) {
     return JSON.parse(dl);
   });
   const [rides, setRides] = useState<any[]>();
+  const [message, setMessage] = useState<string>();
+  const [header, setHeader] = useState<string>();
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [distance, setDistance] = useState<string>();
   const [destinationInput, setDestinationInput] = useState<any>(
     localStorage.getItem("destinationInput")
   );
+  const [isDriverCompleteLoading, setIsDriverCompleteLoading] =
+    useState<boolean>(false);
   const [balance, setBalance] = useState<number>();
   const [waypoints, setWaypoints] = useState<any>([]);
   const [colors, setColors] = useState<any>([
+    "darkorange",
+    "red",
+    "lightcoral",
+    "orangered",
+    "royalblue",
+    "cornflowerblue",
+    "purple",
+    "orange",
+    "darkorange",
+    "red",
+    "lightcoral",
+    "orangered",
+    "royalblue",
+    "cornflowerblue",
+    "purple",
+    "orange",
+    "darkorange",
+    "red",
+    "lightcoral",
+    "orangered",
+    "royalblue",
+    "cornflowerblue",
+    "purple",
+    "orange",
     "darkorange",
     "red",
     "lightcoral",
@@ -144,6 +185,9 @@ function RideDetails(props: any) {
     lat: 19.0989,
     lng: 72.8515,
   });
+
+  let user = JSON.parse(localStorage.getItem("user") as string);
+  let userId = user?.Id;
 
   const [role, setRole] = useState<string>("driver");
   const [isLoadingOpen, setIsLoadingOpen] = useState<boolean>(false);
@@ -161,6 +205,12 @@ function RideDetails(props: any) {
   var bounds = new google.maps.LatLngBounds();
 
   const searchRidesModal = useRef<HTMLIonModalElement>(null);
+
+  const pageLocation: any = useLocation();
+
+  const params = new URLSearchParams(pageLocation.search);
+  const rideId: string = params.get("rideId") as string;
+  console.log(rideId);
 
   useEffect(() => {
     let user = localStorage.getItem("user");
@@ -225,8 +275,9 @@ function RideDetails(props: any) {
     setIsLoading(true);
     const fetchRideDetails = async () => {
       // let data = localStorage.getItem("rideDetails");
+
       console.log("isloading", true);
-      let data = await getRideDetails("");
+      let data = await getRideDetails(rideId);
       // if (!data) return;
       // data = JSON.parse(data);
       setRideDetails(data);
@@ -238,7 +289,7 @@ function RideDetails(props: any) {
     };
     const unsubscribe = firestore
       .collection("Rides")
-      .doc("LknG10qarBrKgoYnTAmj")
+      .doc(rideId)
       .onSnapshot((snapshot) => {
         if (snapshot.exists) {
           fetchRideDetails();
@@ -278,25 +329,35 @@ function RideDetails(props: any) {
     let a: HTMLInputElement | null = document.getElementById(
       radioId
     ) as HTMLInputElement;
-    a.checked = true;
+    if (a.checked == true) {
+      a.checked = false;
+    } else {
+      a.checked = true;
+    }
   }
 
   const handleAccpetClick = (coriderId: string) => {
     setIsLoadingOpen(true);
     const accept = async () => {
-      let msg = await acceptRequest("LknG10qarBrKgoYnTAmj", coriderId);
+      let msg = await acceptRequest(rideId, coriderId);
     };
     accept();
   };
   const handleRejectClick = (coriderId: string) => {
     setIsLoadingOpen(true);
     const reject = async () => {
-      let msg = await rejectRequest("LknG10qarBrKgoYnTAmj", coriderId);
+      let msg = await rejectRequest(rideId, coriderId);
     };
     reject();
   };
 
   useEffect(() => {
+    console.log("rideDetails", rideDetails);
+    if (rideDetails?.Driver?.Id === userId) {
+      setRole("driver");
+    } else {
+      setRole("corider");
+    }
     let cds = rideDetails?.CoRiders.filter(
       (ride: any) => ride.Status === "Joined"
     );
@@ -305,8 +366,8 @@ function RideDetails(props: any) {
     );
     if (cds) {
       cds.sort((a: any, b: any) => {
-        if (a?.CoRider?.Id === "Q8CsASuoYfTMeXksekar") return -1;
-        if (b?.CoRider?.Id === "Q8CsASuoYfTMeXksekar") return 1;
+        if (a?.CoRider?.Id === userId) return -1;
+        if (b?.CoRider?.Id === userId) return 1;
         return 0;
       });
     }
@@ -315,7 +376,7 @@ function RideDetails(props: any) {
     }
     if (role == "corider") {
       const cd = rideDetails?.CoRiders.filter(
-        (ride: any) => ride?.CoRider?.Id === "Q8CsASuoYfTMeXksekar"
+        (ride: any) => ride?.CoRider?.Id === userId
       );
       if (cd?.length > 0) {
         setCorider(cd[0]);
@@ -323,13 +384,17 @@ function RideDetails(props: any) {
       }
     }
     setCoRiders(cds);
-    setCoRidersJoined(cds?.length || 0);
+    setCoRidersJoined(rideDetails?.JoinedRiders);
     // setCoRiders([]);
+    setIsLoadingOpen(false);
+    console.log("mapsurl", constructGoogleMapsURL());
+  }, [rideDetails]);
 
+  useEffect(() => {
     let wp: any = [];
     if (role == "driver") {
-      if (cds && cds.length > 0) {
-        cds.map((corider: any) => {
+      if (coriders && coriders.length > 0) {
+        coriders.map((corider: any) => {
           wp = [
             ...wp,
             { location: { lat: corider?.Pickup[0], lng: corider?.Pickup[1] } },
@@ -340,13 +405,82 @@ function RideDetails(props: any) {
           ];
         });
         setWaypoints(wp);
+        setWaypoints((prevWp: any) => {
+          return prevWp;
+        });
       }
       const requests = rideDetails?.CoRiders.filter(
         (ride: any) => ride.Status === "Requested"
       );
       setRequests(requests);
     }
-  }, [rideDetails]);
+  }, [coriders]);
+
+  const onRiderCompleteClick = async (coriderId: string, index: number) => {
+    setIsLoadingOpen(true);
+    let input = document.getElementById(`input${index}`) as HTMLInputElement;
+    let code = parseInt(input.value);
+    try {
+      let data = await axios.get(
+        "https://codrive.pythonanywhere.com/complete_corider_ride",
+        {
+          params: {
+            rideId: rideId,
+            coriderId: coriderId,
+            completionCode: code,
+          },
+        }
+      );
+      console.log(data.data);
+    } catch (e: any) {
+      if (e.response.status === 500) {
+        setIsLoadingOpen(false);
+        setHeader("Error");
+        setMessage(JSON.stringify(e));
+        setIsAlertOpen(true);
+      }
+    }
+  };
+
+  const constructGoogleMapsURL = () => {
+    const baseURL = "https://www.google.com/maps/dir/";
+    let url = `${baseURL}${rideDetails?.Source[0]},${rideDetails?.Source[1]}/${rideDetails?.Destination[0]},${rideDetails?.Destination[1]}`;
+    if (waypoints && waypoints.length > 0) {
+      const encodedWaypoints = waypoints
+        .map(
+          (waypoint: any) =>
+            `${waypoint?.location?.lat},${waypoint?.location?.lng}`
+        )
+        .join("/");
+      url += `/${encodedWaypoints}`;
+    }
+    return url;
+  };
+
+  const handleCompleteDriverRideClick = async () => {
+    setIsDriverCompleteLoading(true);
+    try {
+      let data = await axios.get(
+        "https://codrive.pythonanywhere.com/complete_driver_ride",
+        {
+          params: {
+            rideId: rideId,
+          },
+        }
+      );
+      console.log(data.data);
+      setIsDriverCompleteLoading(false);
+    } catch (e: any) {
+      setIsDriverCompleteLoading(false);
+      if (e.response.status === 500) {
+        setIsLoadingOpen(false);
+        setHeader("Error");
+        setMessage(JSON.stringify(e));
+        setIsAlertOpen(true);
+      }
+    }
+  };
+
   return (
     <>
       <IonPage>
@@ -422,7 +556,6 @@ function RideDetails(props: any) {
                         : { lat: corider?.Pickup[0], lng: corider?.Pickup[1] }
                     }
                   >
-                    {/* <div className="infoWindow sourceInfoWindow">{"Start"}</div> */}
                     <div
                       className="outerCircle"
                       style={{ backgroundColor: "black" }}
@@ -574,10 +707,24 @@ function RideDetails(props: any) {
                         <br />
                         <IonText>Tap to show details</IonText>
                       </div>
+                      {role === "corider" && (
+                        <IonButtons>
+                          <IonButton
+                            href={`tel:${rideDetails?.Driver?.PhoneNumber}`}
+                          >
+                            <IonIcon icon={callOutline}></IonIcon>
+                          </IonButton>
+                        </IonButtons>
+                      )}
                     </div>
                   </div>
 
-                  <input type="radio" id="-1" name="card"></input>
+                  <input
+                    type="radio"
+                    unselectable={"on"}
+                    id="-1"
+                    name="card"
+                  ></input>
                   <div className={`content`}>
                     <div className="dashedLine"></div>
                     <div className="vehicleDetails">
@@ -664,31 +811,41 @@ function RideDetails(props: any) {
                                     </div>
                                     <div className="userName">
                                       <IonText>
-                                        {corider?.CoRider?.Name}
+                                        {corider?.CoRider?.Name}{" "}
+                                        {role == "corider" &&
+                                          corider?.CoRider?.Id == userId && (
+                                            <span>(You)</span>
+                                          )}
                                       </IonText>
                                       <br />
                                       {role == "driver" && (
                                         <IonText>Tap to show details</IonText>
                                       )}
                                       {role == "corider" &&
-                                        corider?.CoRider?.Id ==
-                                          "Q8CsASuoYfTMeXksekar" && (
+                                        corider?.CoRider?.Id == userId && (
                                           <IonText>Tap to show details</IonText>
                                         )}
                                       {role == "corider" &&
-                                        corider?.CoRider?.Id !=
-                                          "Q8CsASuoYfTMeXksekar" && (
+                                        corider?.CoRider?.Id != userId && (
                                           <IonText>Riding with you.</IonText>
                                         )}
                                     </div>
+                                    {role === "driver" && (
+                                      <IonButtons>
+                                        <IonButton
+                                          href={`tel:${corider?.CoRider?.PhoneNumber}`}
+                                        >
+                                          <IonIcon icon={callOutline}></IonIcon>
+                                        </IonButton>
+                                      </IonButtons>
+                                    )}
                                   </div>
                                 </div>
                                 {role == "driver" && (
                                   <div className="dashedLine"></div>
                                 )}
                                 {role == "corider" &&
-                                  corider?.CoRider?.Id ==
-                                    "Q8CsASuoYfTMeXksekar" && (
+                                  corider?.CoRider?.Id == userId && (
                                     <>
                                       <div className="dashedLine"></div>
                                     </>
@@ -696,28 +853,54 @@ function RideDetails(props: any) {
                                 <div className="amountHolder">
                                   {role == "driver" && (
                                     <>
-                                      <IonText>You Get</IonText>
-                                      <IonText>Rs. {corider?.Amount}</IonText>
+                                      <IonText>
+                                        {rideDetails?.Status === "Completed"
+                                          ? "You Got"
+                                          : "You Get"}
+                                      </IonText>
+                                      <div>
+                                        <IonIcon
+                                          icon={cashOutline}
+                                          style={{
+                                            marginRight: "5px",
+                                            color: "darkgray",
+                                          }}
+                                        ></IonIcon>
+                                        <IonText>Rs. {corider?.Amount}</IonText>
+                                        {rideDetails?.Status ===
+                                          "Completed" && (
+                                          <IonIcon
+                                            icon={checkmarkOutline}
+                                            style={{
+                                              color: "green",
+                                              marginLeft: "5px",
+                                            }}
+                                          ></IonIcon>
+                                        )}
+                                      </div>
                                     </>
                                   )}{" "}
                                   {role == "corider" &&
-                                    corider?.CoRider?.Id ==
-                                      "Q8CsASuoYfTMeXksekar" && (
+                                    corider?.CoRider?.Id == userId && (
                                       <>
-                                        <IonText>You Pay</IonText>
+                                        <IonText>
+                                          {corider?.Status === "Completed"
+                                            ? "You Paid"
+                                            : "You Pay"}
+                                        </IonText>
                                         <IonText>Rs. {corider?.Amount}</IonText>
                                       </>
                                     )}
                                 </div>
                                 <input
                                   type="radio"
+                                  unselectable="on"
                                   id={index.toString()}
                                   name="card"
                                 ></input>
                                 <div className={`content`}>
                                   {role != "driver" ? (
-                                    corider?.CoRider?.Id ==
-                                    "Q8CsASuoYfTMeXksekar" ? (
+                                    corider?.CoRider?.Id == userId ? (
                                       <>
                                         <div className="dashedLine"></div>
                                         <div className="locationsHolder">
@@ -788,36 +971,47 @@ function RideDetails(props: any) {
                                   <div className="dashedLine"></div>
                                 )}
                                 {role == "corider" &&
-                                  corider?.CoRider?.Id ==
-                                    "Q8CsASuoYfTMeXksekar" && (
+                                  corider?.CoRider?.Id == userId && (
                                     <>
                                       <div className="dashedLine"></div>
                                     </>
                                   )}
                                 {((role == "corider" &&
-                                  corider?.CoRider?.Id ==
-                                    "Q8CsASuoYfTMeXksekar") ||
+                                  corider?.CoRider?.Id == userId) ||
                                   role == "driver") && (
                                   <div className="completeRideHolder">
                                     {corider?.Status === "Completed" ? (
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <IonIcon
-                                          icon={checkmarkCircleOutline}
+                                      <>
+                                        <div
                                           style={{
-                                            color: "green",
-                                            marginRight: "7px",
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
                                           }}
-                                        ></IonIcon>
+                                        >
+                                          <IonIcon
+                                            icon={checkmarkCircle}
+                                            style={{
+                                              color: "green",
+                                              marginRight: "7px",
+                                            }}
+                                          ></IonIcon>
+                                          <IonText>
+                                            This ride is completed.
+                                          </IonText>
+                                        </div>
+                                        <div className="dashedLine"></div>
                                         <IonText>
-                                          This ride is completed.
+                                          <IonIcon
+                                            icon={alarmOutline}
+                                            style={{
+                                              marginRight: "5px",
+                                              color: "darkgray",
+                                            }}
+                                          ></IonIcon>
+                                          Drop Time: {corider?.DropTime}
                                         </IonText>
-                                      </div>
+                                      </>
                                     ) : (
                                       <>
                                         {role == "driver" && (
@@ -828,16 +1022,26 @@ function RideDetails(props: any) {
                                             </IonText>
                                             <div className="actionButtons">
                                               <input
+                                                id={"input" + index}
                                                 type="tel"
                                                 placeholder="Code"
+                                                maxLength={5}
                                               />
-                                              <IonButton>Complete</IonButton>
+                                              <IonButton
+                                                onClick={() =>
+                                                  onRiderCompleteClick(
+                                                    corider?.Id,
+                                                    index
+                                                  )
+                                                }
+                                              >
+                                                Complete
+                                              </IonButton>
                                             </div>
                                           </>
                                         )}
                                         {role == "corider" &&
-                                          corider?.CoRider?.Id ==
-                                            "Q8CsASuoYfTMeXksekar" && (
+                                          corider?.CoRider?.Id == userId && (
                                             <>
                                               <IonText>
                                                 Your ride completion code is.
@@ -917,6 +1121,7 @@ function RideDetails(props: any) {
 
                                   <input
                                     type="radio"
+                                    unselectable="on"
                                     id={(coriders?.length + index).toString()}
                                     name="card"
                                   ></input>
@@ -943,28 +1148,28 @@ function RideDetails(props: any) {
                                         <IonText>{request?.Drop[2]}</IonText>
                                       </div>
                                     </div>
-                                    <div className="dashedLine"></div>
-                                    <div className="requestAcceptHolder">
-                                      <IonText>
-                                        {request?.CoRider?.Name} has requested
-                                        to join this ride.
-                                      </IonText>
-                                      <div className="actionButtons">
-                                        <IonButton
-                                          onClick={() =>
-                                            handleRejectClick(request?.Id)
-                                          }
-                                        >
-                                          Reject
-                                        </IonButton>
-                                        <IonButton
-                                          onClick={() =>
-                                            handleAccpetClick(request?.Id)
-                                          }
-                                        >
-                                          Accept
-                                        </IonButton>
-                                      </div>
+                                  </div>
+                                  <div className="dashedLine"></div>
+                                  <div className="requestAcceptHolder">
+                                    <IonText>
+                                      {request?.CoRider?.Name} has requested to
+                                      join this ride.
+                                    </IonText>
+                                    <div className="actionButtons">
+                                      <IonButton
+                                        onClick={() =>
+                                          handleRejectClick(request?.Id)
+                                        }
+                                      >
+                                        Reject
+                                      </IonButton>
+                                      <IonButton
+                                        onClick={() =>
+                                          handleAccpetClick(request?.Id)
+                                        }
+                                      >
+                                        Accept
+                                      </IonButton>
                                     </div>
                                   </div>
                                 </div>
@@ -1023,7 +1228,7 @@ function RideDetails(props: any) {
             <IonText style={{ marginLeft: "10px" }}>Completed</IonText>
           </IonFooter>
         )}
-        {rideDetails?.Status === "Started" && coridersJoined === 0 && (
+        {role === "driver" && rideDetails?.Status === "Started" && (
           <IonFooter
             style={{
               backgroundColor: "#f0f0f0",
@@ -1032,15 +1237,51 @@ function RideDetails(props: any) {
               justifyContent: "center",
             }}
           >
-            <IonButton
-              disabled={rideDetails?.Status === "Completed" ? true : false}
-              style={{ ...buttonStyle }}
-            >
-              Complete Ride
-            </IonButton>
+            {" "}
+            {coridersJoined === 0 ? (
+              <IonButton
+                disabled={isDriverCompleteLoading}
+                style={{ ...buttonStyle }}
+                onClick={handleCompleteDriverRideClick}
+              >
+                {isDriverCompleteLoading && (
+                  <IonSpinner style={{ marginRight: "10px" }}></IonSpinner>
+                )}
+                Complete Ride
+              </IonButton>
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  justifyContent: "center",
+                  textAlign: "center",
+                }}
+              >
+                <IonText
+                  style={{
+                    color: "darkgray",
+                    fontSize: "15px",
+                  }}
+                >
+                  <IonIcon
+                    icon={informationCircleOutline}
+                    style={{ marginRight: "5px" }}
+                  ></IonIcon>
+                  You need to drop all co-riders to complete this ride.
+                </IonText>
+              </div>
+            )}
           </IonFooter>
         )}
       </IonPage>
+      <IonAlert
+        message={message}
+        header={header}
+        isOpen={isAlertOpen}
+        buttons={[{ text: "Ok", handler: () => setIsAlertOpen(false) }]}
+      ></IonAlert>
       <IonLoading isOpen={isLoadingOpen}></IonLoading>
     </>
   );

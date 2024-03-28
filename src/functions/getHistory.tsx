@@ -1,13 +1,13 @@
 import axios from "axios";
 
-const getHistory = async () => {
+const getHistory = async (userId: string) => {
   let history;
   try {
     let data = await axios.get(
       "https://codrive.pythonanywhere.com/get_history",
       {
         params: {
-          userId: "zoRqVAbw0ZI13ndOs0ni",
+          userId: userId,
         },
       }
     );

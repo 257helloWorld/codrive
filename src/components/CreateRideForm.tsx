@@ -26,28 +26,28 @@ import {
 import StartRideDetails from "../types/StartRideDetails";
 import startRide from "../functions/startRide";
 import { IonReactRouter } from "@ionic/react-router";
+import { useLocation } from "react-router";
 
 export function SelectVehicle(props: any) {
   let details: any = localStorage.getItem("createRideDetails");
-  if (details) {
-    details = JSON.parse(details);
-  }
-  let index = details?.vehicleIndex ? details?.vehicleIndex : 0;
-  const selectedVehicle = useRef<number>(index);
+
+  const location: any = useLocation();
+
+  const [selectedVehicle, setSelectedVehicle] = useState<string>("0");
   console.log(selectedVehicle);
   const routerContext = useContext(IonRouterContext);
   const handleSelectedVehicleChange = (event: any) => {
     let index = event?.detail?.value;
-    selectedVehicle.current = index;
+    setSelectedVehicle(index);
   };
   const onVehicleBackClick = () => {};
 
   const onVehicleNextClick = () => {
     let createRideDetails = {
       ...details,
-      vehicleIndex: selectedVehicle.current,
-      vehicle: props.vehicles[selectedVehicle.current],
-      vehicleId: props.vehicles[selectedVehicle.current]?.Id,
+      vehicleIndex: selectedVehicle,
+      vehicle: props.vehicles[parseInt(selectedVehicle)],
+      vehicleId: props.vehicles[parseInt(selectedVehicle)]?.Id,
     };
     let data = JSON.stringify(createRideDetails);
     localStorage.setItem("createRideDetails", data);
@@ -56,20 +56,32 @@ export function SelectVehicle(props: any) {
   console.log(props.vehicles, "vehicles");
 
   const onAddVehicleClick = () => {
-    routerContext.push("/profile", "forward");
+    props.setVehiclesWillUpdate(true);
+    routerContext.push("/managevehicles", "forward");
   };
 
+  useEffect(() => {
+    if (details) {
+      details = JSON.parse(details);
+    }
+    let index = details?.vehicleIndex ? details?.vehicleIndex : 0;
+    setSelectedVehicle(index.toString());
+  }, []);
+
+  useEffect(() => {
+    props.updateVehicles();
+  }, [location]);
   return (
     <div id="container" className="container visible">
       <IonText className="title">Select Vehicle</IonText>
       <div className="vehicleInfo">
         <IonRadioGroup
-          value={selectedVehicle.current}
+          value={selectedVehicle}
           onIonChange={handleSelectedVehicleChange}
         >
           {props.vehicles.map((vehicle: any, index: any) => (
             <IonItem lines="none" key={index}>
-              <IonRadio slot="start" value={index}></IonRadio>
+              <IonRadio slot="start" value={index.toString()}></IonRadio>
               <IonLabel>{vehicle?.VehicleName}</IonLabel>
               <IonBadge slot="end" className={vehicle?.FuelType}>
                 {vehicle?.FuelType}
@@ -266,7 +278,6 @@ export function ConfirmDetails(props: any) {
   let startTime = details?.schedule;
   let startTimeString = new Date(startTime).toUTCString();
   let sourceInput = localStorage.getItem("sourceInput");
-  console.log("sourcein", sourceInput);
   let destinationInput = localStorage.getItem("destinationInput");
   let sourceLatLng: any = localStorage.getItem("sourceLatLng");
   sourceLatLng = JSON.parse(sourceLatLng);
@@ -286,24 +297,31 @@ export function ConfirmDetails(props: any) {
   };
 
   const onConfirmSubmitClick = () => {
+    let user = JSON.parse(localStorage.getItem("user") as string);
+    let userId = user?.Id;
     props.setIsConfirmLoading(true);
-    console.log("set to turu");
     let confirmDetails: StartRideDetails = {
       ...details,
       sourceInput: sourceInput,
+      userId: userId,
       destinationInput: destinationInput,
       sourceLatLng: sourceLatLng,
       destinationLatLng: destinationLatLng,
       isNow: isNow,
+      totalDistance: props.distance,
     };
 
     localStorage.setItem("createRideDetails", JSON.stringify(confirmDetails));
     const submitCreateRideForm = async () => {
-      let response = await startRide(confirmDetails);
-      console.log(response);
-      console.log("loaded");
+      let response: any = await startRide(confirmDetails);
+      console.log("response", response);
+      let rideId = response?.document_id;
       props.setIsConfirmLoading(false);
-      ionRouterContext.push("/ridedetails", "root");
+      ionRouterContext.push(
+        `/ridedetails?rideId=${rideId}`,
+        "forward",
+        "replace"
+      );
     };
     submitCreateRideForm();
   };

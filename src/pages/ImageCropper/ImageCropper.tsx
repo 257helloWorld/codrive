@@ -88,10 +88,18 @@ const ImageCropper = () => {
     });
   };
 
+  const handleBackClick = () => {
+    ionRouterContext.push(`/craftprofile?${encodeURIComponent(false)}`, "back");
+  };
+
   const handleDoneClick = () => {
     localStorage.setItem("croppedImage", croppedImageData);
     localStorage.setItem("isCropped", JSON.stringify(true));
-    ionRouterContext.back();
+    let isCropped = true;
+    ionRouterContext.push(
+      `/craftprofile?${encodeURIComponent(isCropped)}`,
+      "back"
+    );
   };
 
   useEffect(() => {

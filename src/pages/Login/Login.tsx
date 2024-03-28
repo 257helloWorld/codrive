@@ -63,7 +63,9 @@ const Login: React.FC = () => {
   const sendOtp = () => {
     let phoneNumber = localStorage.getItem("phoneNumber");
     let otp = localStorage.getItem("otp");
-    const url = "";
+    const url = `https://api.twilio.com/2010-04-01/Accounts/${
+      import.meta.env.VITE_TWILIO_URL
+    }`;
     const data = new URLSearchParams();
     data.append("To", `+91${phoneNumber}`);
     data.append("From", "+15642442806");
@@ -74,7 +76,7 @@ const Login: React.FC = () => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       auth: {
-        username: "",
+        username: import.meta.env.TWILIO_USERNAME,
         password: import.meta.env.VITE_TWILIO_AUTH_ID,
       },
     };
@@ -97,6 +99,10 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     console.log("login rendered");
+    let user = JSON.parse(localStorage.getItem("user") as string);
+    if (user) {
+      ionRouterContext.push("/home", "forward", "replace");
+    }
   }, []);
 
   return (
