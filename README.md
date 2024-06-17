@@ -6,7 +6,7 @@ This is a full-stack application developed using [Ionic React](https://ionicfram
 # Table of Contents
 - [Features](#features)
 - [Usage](#usage)
-- [Screenshots & Videos](#screenshots-&-Videos)
+- [Screenshots & Videos](#screenshots-&-videos)
 - [Contact](#contact)
   
 ## Features
