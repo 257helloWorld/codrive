@@ -16,6 +16,31 @@ This is a full-stack application developed using [Ionic React](https://ionicfram
 - Ride Search: Passengers can search for available rides based on their preferences.
 - Booking System: Passengers can request to join a ride, and drivers can accept or reject requests.
 
+## Installation
+###Prerequisites
+- [Node.js](https://nodejs.org/)
+- [npm](https://www.npmjs.com/)
+### Steps
+1. Clone the repository
+  ```
+  git clone https://github.com/257helloworld/codrive.git
+  cd codrive
+  ```
+2. Install dependencies
+```
+npm install
+```
+3. Set up environment variables:
+Create a .env file in the root directory and add the following variables:
+```
+VITE_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+VITE_APP_GOOGLE_MAPS_STYLE=your_google_maps_style
+```
+4. Run the application
+```
+npm start
+```
+
 ## Usage
 - Register an account if you're a new user or log in if you already have an account.
 - Create a profile with your personal details and preferences.
