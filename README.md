@@ -6,7 +6,7 @@ This is a full-stack application developed using [Ionic React](https://ionicfram
 # Table of Contents
 - [Features](#features)
 - [Usage](#usage)
-- [Screenshots & Videos](#screenshots-&-videos)
+- [Screenshots](#screenshots)
 - [Contact](#contact)
   
 ## Features
@@ -48,7 +48,7 @@ npm start
 - Search for rides if you're a passenger looking for a ride.
 - Request to join a ride and wait for the driver's approval.
 
-## Screenshots & Videos
+## Screenshots
 <img style="width:300px;margin-top:15px;" src="https://github.com/257helloWorld/CoDrive/assets/110030634/c1d860f2-2ca0-4124-85c4-828eaef87804"></img>
 <img style="width:300px;margin-top:15px;" src="https://github.com/257helloWorld/CoDrive/assets/110030634/1aebcf86-0009-44b6-8bec-87708d475565"></img>
 <img style="width:300px;margin-top:15px;" src="https://github.com/257helloWorld/CoDrive/assets/110030634/1f0a79fd-63f9-4165-b20f-2a406954afd5"></img>
