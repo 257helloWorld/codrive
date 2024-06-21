@@ -36,7 +36,7 @@ npm install
 Create a .env file in the root directory and add the following variables:
 ```
 VITE_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-VITE_APP_GOOGLE_MAPS_STYLE=your_google_maps_style
+VITE_APP_GOOGLE_MAPS_MAP_ID=your_google_maps_id
 ```
 4. Run the application
 ```
