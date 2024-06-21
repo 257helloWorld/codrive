@@ -3,6 +3,8 @@ A cross-platform (Android, iOS & Web) app that enables ride-sharing and connects
 
 This is a full-stack application developed using [Ionic React](https://ionicframework.com/), Flask, Firebase Firestore, Google Maps API, etc.
 
+[CoDrive Back-End](https://github.com/257helloWorld/codrivebackend) is developed using Flask framework.
+
 # Table of Contents
 - [Features](#features)
 - [Usage](#usage)
@@ -64,3 +66,6 @@ npm start
 If you have any questions or suggestions, please feel free to reach out to:
 
 GitHub Issues: https://github.com/257helloworld/CoDrive/issues
+
+***
+Check out [back-end](https://github.com/257helloWorld/codrivebackend) repository for CoDrive application.
