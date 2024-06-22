@@ -1,4 +1,4 @@
-# CoDrive - Car Pooling App 🚗
+# 🚗 CoDrive - Car Pooling App 
 A cross-platform (Android, iOS & Web) app that enables ride-sharing and connects drivers with riders commuting on similar routes, making commutes more efficient and eco-friendly.
 
 This is a full-stack application developed using [Ionic React](https://ionicframework.com/), Flask, Firebase Firestore, Google Maps API, etc.
