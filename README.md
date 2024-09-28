@@ -37,6 +37,11 @@ Create a .env file in the root directory and add the following variables:
 ```
 VITE_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 VITE_APP_GOOGLE_MAPS_MAP_ID=your_google_maps_id
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_FIREBASE_BUCKET_URL=your_firebase_storage_bucket_url
 ```
 4. Run the application
 ```
